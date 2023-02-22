@@ -1,0 +1,544 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overleaf Example: A quick guide to LaTeX
+%
+% Original Source: Dave Richeson (divisbyzero.com), Dickinson College
+% Modified By: Paul Gessler, Overleaf (overleaf.com)
+% 
+% A one-size-fits-all LaTeX cheat sheet. Kept to two pages, so it 
+% can be printed (double-sided) on one piece of paper
+% 
+% Feel free to distribute this example, but please keep the referral
+% to divisbyzero.com
+% 
+% Guidance on the use of the Overleaf logos can be found here:
+% https://www.overleaf.com/for/partners/logos 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use Overleaf: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[10pt,landscape,letterpaper]{article}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{spverbatim}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,urlcolor=olgreen]{hyperref}
+\usepackage{booktabs}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
+\setsansfont{Fira Sans}
+\usepackage{tcolorbox} 
+\setmonofont{Inconsolata}
+%\usepackage{unicode-math}
+%\setmathfont{TeX Gyre Pagella Math}
+\usepackage{microtype}
+% dirty fix for microtype
+\makeatletter
+\def\MT@is@composite#1#2\relax{%
+  \ifx\\#2\\\else
+    \expandafter\def\expandafter\MT@char\expandafter{\csname\expandafter
+                    \string\csname\MT@encoding\endcsname
+                    \MT@detokenize@n{#1}-\MT@detokenize@n{#2}\endcsname}%
+    % 3 lines added:
+    \ifx\UnicodeEncodingName\@undefined\else
+      \expandafter\expandafter\expandafter\MT@is@uni@comp\MT@char\iffontchar\else\fi\relax
+    \fi
+    \expandafter\expandafter\expandafter\MT@is@letter\MT@char\relax\relax
+    \ifnum\MT@char@ < \z@
+      \ifMT@xunicode
+        \edef\MT@char{\MT@exp@two@c\MT@strip@prefix\meaning\MT@char>\relax}%
+          \expandafter\MT@exp@two@c\expandafter\MT@is@charx\expandafter
+            \MT@char\MT@charxstring\relax\relax\relax\relax\relax
+      \fi
+    \fi
+  \fi
+}
+% new:
+\def\MT@is@uni@comp#1\iffontchar#2\else#3\fi\relax{%
+  \ifx\\#2\\\else\edef\MT@char{\iffontchar#2\fi}\fi
+}
+\makeatother
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{margin=0.4in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\sffamily\large}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\sffamily\normalsize\itshape}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\itshape}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+% -----------------------------------------------------------------------
+
+\usepackage{academicons}
+
+%\usepackage{draftwatermark,afterpage,xcolor}
+%\definecolor{olgreen}{HTML}{4f9c45}
+%\SetWatermarkText{\aiOverleaf}
+%\SetWatermarkFontSize{0.9\paperheight}
+%\SetWatermarkAngle{0}
+%\SetWatermarkColor[HTML]{EDF5EC}
+%\SetWatermarkLightness{0.95}
+%\SetWatermarkHorCenter{0.35\paperwidth}
+
+\begin{document}
+\footnotesize
+%\raggedright
+
+\begin{center}
+  {\huge\sffamily\bfseries Capítulo 6 Funciones de variables aleatorias}  \\
+\end{center}
+\setlength{\premulticols}{0pt}
+\setlength{\postmulticols}{0pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{1.8em}
+\begin{multicols}{3}
+
+\section{\textbf{6.1} Introducción}
+
+El objetivo de la estadística es hacer inferencias acerca de una población con base en información contenida en una muestra tomada de esa población. Cualquier inferencia verdaderamente útil debe ser acompañada por una mediad de bondad asociada. Frecuentemente se utiliza el \emph{error de estimación}, que es la diferencia entre la estimación y el parámetro estimado. Como se necesitan ocupar $n$ variables aleatorias para calcular un estimador entonces este estimador también es una variable aleatoria. Con esto se deduce que se puede determinar la distribución de probabilidad para una función de $n$ variables aleatorias ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$. Esto se puede hacer calculado la distribución de probabilidad conjunta para estas variables. Para este capítulo supondremos que las variables fueron tomadas de una muestra con una población lo suficientemente grande para que estas sean independientes. Entonces para el caso discreto la función de probabilidad conjunta para las variables ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$, está dada por 
+
+\begin{align*}
+p({y}_{1},{y}_{2},\ldots,{y}_{n}) = p({y}_{1})p({y}_{2})\cdots p({y}_{n})
+\end{align*}
+
+En el caso continuo, la función de densidad conjunta es
+
+\begin{align*}
+f({y}_{1},{y}_{2},\ldots,{y}_{n}) = f({y}_{1})f({y}_{2})\cdots f({y}_{n})
+\end{align*}
+
+En las siguientes tres secciones se verán métodos para determinar la distribución de probabilidad para una función de variables aleatorias y un cuarto método para determinar la distribución \emph{conjunta} de varias funciones de variables aleatorias. 
+
+\section{\textbf{6.3} Método de las funciones de distribución}
+
+Este método se emplea generalmente cuando las $Y$ tienen distribuciones continuas. Si $Y$ tiene una función de densidad de probabilidad $f(y)$ y si $U$ es alguna función de $Y$, entonces podemos calcular ${F}_{U}(u)=P(U\leq u)$ directamente al integrar $f(y)$ en la región para la cual $U\leq u$. La función de densidad de probabilidad para $U$ se encuentra al derivar ${F}_{U}(u)$. Entonces se puede resumir el método de la siguiente manera. 
+
+\begin{tcolorbox}
+\textbf{Resumen del método de las funciones de distribución}
+
+Sea $U$ una función de las variables aleatorias ${Y}_{1}$,${Y}_{2}$,$\ldots$,${Y}_{n}$.
+
+\begin{enumerate}
+
+\item[1.] Localice la región $U = u$ del espacio $({y}_{1}$,${y}_{2}$,$\ldots$,${y}_{n})$. 
+
+\item[2.] Localice la región $U \leq u$. 
+
+\item[3.] Determine ${F}_{U}(u)= P(U \leq u)$ al integrar $f({y}_{1},{y}_{2},\ldots,{y}_{n})$ sobre la región $U\leq u$. 
+
+\item[4.] Determine la función de densidad ${f}_{U}(u)$ al derivar ${F}_{U}(u)$. Por tanto, ${f}_{U}(u)= \displaystyle \frac{d{F}_{U}(u)}{du}$.
+
+\end{enumerate}
+\end{tcolorbox}
+
+Para ilustrar, considere el caso $U= h(Y) = {Y}^{2}$, donde $Y$ es una variables aleatorias continua con función de distribución ${F}_{Y}(y)$ y función de densidad ${f}_{Y}(y)$. Si $u \leq 0$, ${F}_{U}(u)=P(U\leq u)=P({Y}^{2} \leq u) = 0$ y para $\mu >0$, 
+
+\begin{align*}
+{F}_{U}(u) &= P(U \leq u) = P({Y}^{2} \leq u) \\
+&= P(-\sqrt{u} \leq Y \leq \sqrt{u}) \\
+&= \int_{-\sqrt{u}}^{\sqrt{u}}{f(y)dy} = {F}_{Y}(\sqrt{u}) - {F}_{Y}(-\sqrt{u})
+\end{align*}
+
+En general, 
+
+\begin{align*}
+{F}_{U}(u) = \begin{cases} {F}_{Y}(\sqrt{u}) - {F}_{Y}(-\sqrt{u}), & u > 0 \\
+0, \quad \text{en cualquier otro punto} \end{cases}
+\end{align*}
+
+Al derivar con respecto a $u$, vemos que 
+
+\begin{align*}
+{f}_{U}(u) = \begin{cases} {f}_{Y}(\sqrt{u})\left(\frac{1}{2\sqrt{u}}\right) + {f}_{Y}(-\sqrt{u})\left(\frac{1}{2\sqrt{u}}\right), & u > 0 \\
+0, \quad \text{en cualquier otro punto} \end{cases}
+\end{align*}
+
+o bien, simplemente, 
+
+\begin{align*}
+{f}_{U}(u) = \begin{cases} \left(\frac{1}{2\sqrt{u}}\right)\left[{f}_{Y}(\sqrt{u}) + {f}_{Y}(-\sqrt{u})\right], & u > 0 \\
+0, \quad \text{en cualquier otro punto} \end{cases}
+\end{align*}
+
+En algunos casos es posible encontrar una transformación que cuando se aplica a una variable aleatorias con distribución uniforme en el intervalo $(0,1)$, resulta en una variable aleatoria con alguna otra función de distribución específica, por ejemplo $F(y)$. 
+
+\section{\textbf{6.4} Método de las transformaciones}
+
+El método de las transformaciones, es una consecuencia del método de función de distribución de la sección anterior. Mediante el método de las funciones de distribución podemos llegar a un método simple para formular la función de densidad de $U = h(Y)$ sea decreciente o creciente. 
+
+Suponga que $h(y)$ es una función creciente de $y$ y que $U = h(Y)$, donde $Y$ tiene función de densidad ${f}_{Y}(y)$. Entonces ${h}^{-1}(u)$ es una función creciente de $u$: si ${u}_{1}<{u}_{2}$, entonces ${h}^{-1}({u}_{1} = {y}_{1} < {y}_{2} = {h}^{-1}({u}_{2})$. En la siguiente figura vemos que el conjunto de puntos $y$ tales que $h(y) \leq {u}_{1}$ es precisamente igual que el conjunto de puntos $y$ tales que $y \leq {h}^{-1}({u}_{1})$. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_6_1.png} \hfill
+}
+
+Por lo tanto, 
+
+\begin{align*}
+    P(U\leq u) &= P[h(Y) \leq u] = P\left\{{h}^{-1}[h(Y)] \leq  {h}^{-1}(u)\right\} \\
+    &= P[Y \leq {h}^{-1}(u)]
+\end{align*}
+
+o bien, 
+
+\begin{align*}
+   {F}_{U}(u) = {F}_{Y}[{h}^{-1}(u)] 
+\end{align*}
+
+Entonces derivando con respecto a $u$, tenemos 
+
+\begin{align*}
+    {f}_{U}(u) = \frac{d{F}_{U}(u)}{du} = \frac{d{F}_{Y}[{h}^{-1}(u)]}{du} = {f}_{Y}({h}^{-1}(u)) \frac{d[{h}^{-1}(u)]}{du}
+\end{align*}
+
+Para simplificar la notación, escribiremos $d{h}^{-1}/du$ en lugar de $d[{h}^{-1}(u)]/du$ y 
+
+\begin{align*}
+    {f}_{U}(u) = {f}_{Y}[{h}^{-1}(u)] \frac{d{h}^{-1}}{du}
+\end{align*}
+
+Para determinar ${f}_{U}(u)$, despeje $y$ en término de $u$; esto es, encuentre $y = {h}^{-1}(u)$ y sustituya esta expresión en ${f}_{Y}(y)$. Finalmente multiplique esta cantidad por $d{h}^{-1}/du$. 
+
+Si $h(y)$ es una función decreciente de $y$, entonces ${h}^{-1}(u)$ es una función decreciente de $u$. Esto es, si ${u}_{1} < {u}_{2}$, entonces ${h}^{-1}(u) = {y}_{1} > {y}_{2} = {h}^{-1}({u}_{2})$. Al igual que el caso creciente, de la siguiente figura se puede observar como el conjunto de puntos $y$ tales que $h(y) \leq {u}_{1}$ es el mismo conjunto de puntos tales que $y \geq {h}^{-1}({u}_{1})$. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_6_2.png} \hfill
+}
+
+Se deduce que, para $U=h(Y)$, 
+
+\begin{align*}
+    P(U \leq u) &= P[Y \geq {h}^{-1}(u)] & &\text{o} & {F}_{U}(u)&= 1 - {F}_{Y}[{h}^{-1}(u)]
+\end{align*}
+
+Si derivamos con respecto a $u$, obtenemos 
+
+\begin{align*}
+    {f}_{U}(u) = -{f}_{Y}[{h}^{-1}(u)]\frac{d[{h}^{-1}(u)]}{du}
+\end{align*}
+
+Se de nuevo empleamos la notación simplificada de $d{h}^{-1}/du$ en lugar de $d[{h}^{-1}(u)]/du$ y recordamos que $d{h}^{-1}/du$ es negativa porque ${h}^{-1}(u)$ es una función decreciente de $u$, la densidad de $U$ es 
+
+\begin{align*}
+    {f}_{U}(u) = {f}_{Y}[{h}^{-1}(u)]\left|\frac{d{h}^{-1}}{du}\right|
+\end{align*}
+
+En realidad, no es necesario que $h(y)$ sea creciente o decreciente para todos los valores de $y$. La función $h(\cdot)$ sólo necesita ser creciente o decreciente para los valroes de $y$ tales que ${f}_{Y}(y)>0$. El conjunto de puntos $\{y:{f}_{Y}(y) > 0\}$ se denomina \emph{soporte} de la densidad ${f}_{Y}(y)$. Si $y = {h}^{-1}(u)$ no es el soporte de la densidad, entonces ${f}_{Y}[{h}^{-1}(u)]=0$. En otras palabras se tiene, 
+
+\begin{tcolorbox}
+Sea $Y$ la función de densidad de probabilidad ${f}_{Y}(y)$. Si $h(y)$ es creciente o decreciente para toda $y$ tal que ${f}_{Y}(y)>0$, entonces $U = h(Y)$ tiene función de densidad 
+
+\begin{align*}
+    {f}_{U}(u) = {f}_{Y}[{h}^{-1}(u)]\left|\frac{d{h}^{-1}}{du}\right|
+\end{align*}
+
+donde $\displaystyle \frac{d{h}^{-1}}{du} = \frac{d[{h}^{-1}(u)]}{du}$
+\end{tcolorbox}
+
+Se tiene que comprobar que $y = {h}^{-1}(u)$ es el soporte de la densidad antes de usar este método. De otro modo no se puede aplicar las técnicas vistas en este método. En resumen se tiene lo siguiente, 
+
+\begin{tcolorbox}
+\textbf{Resumen del método de las transformaciones}
+
+Sea $U = h(Y)$, donde $h(y)$ es una función creciente o decreciente de $y$ para toda $y$ tal que ${f}_{Y}(y)>0$. 
+
+\begin{enumerate}
+    \item[1.] Deduzca la función inversa, $y = {h}^{-1}(u)$. 
+
+    \item[2.] Evalúe $\frac{d{h}^{-1}}{du} = \frac{d[{h}^{-1}(u)]}{du}$
+
+    \item[3.] Encuentre ${f}_{U}(u)$ mediante 
+
+    \begin{align*}
+        {f}_{U} = {f}_{Y}[{h}^{-1}(u)]\left|\frac{d{h}^{-1}}{du}\right|
+    \end{align*}
+\end{enumerate}
+\end{tcolorbox}
+
+\section{\textbf{6.5} Método de las funciones generadoras de momento}
+
+El método de las funciones generadoras de momento para determinar la distribución de probabilidad de una función de variables aleatorias ${Y}_{1}.{Y}_{2},\ldots,{Y}_{n}$ está basada en el siguiente teorema de unicidad. 
+
+\begin{tcolorbox}[title = Teorema 6.1]
+Denotemos con ${m}_{X}(t)$ y ${m}_{Y}(t)$ las funciones generadoras de momento de variables aleatorias $X$ y $Y$ respectivamente. Si existen funciones generadoras de momento y ${m}_{X}(t) = {m}_{Y}(t)$ para todos los valores de $t$, entonces $X$ y $Y$ tienen la misma distribución de probabilidad. 
+\end{tcolorbox}
+
+Si $U$ es una función de $n$ variables aleatorias ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$, el primer paso al usar el Teorema 6.1 es hallar la función generadora de momento de $U$. Una vez que se tiene esto se compara con las funciones generadoras de momento para variables aleatorias con distribuciones bien conocidas. Si ${m}_{U}(t)$ es idéntica a una de estas entonces poseen distribuciones de probabilidad idénticas. Se puede ilustrar este método con la siguiente demostración. 
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Sea $Y$ una variable aleatoria normalmente distribuida con media $\mu$ y varianza ${\sigma}^{2}$. Entonces la variable aleatoria $Z$ definida como 
+
+\begin{align*}
+    Z = \frac{Y - \mu }{\sigma}
+\end{align*}
+
+tiene una distribución \emph{normal estándar}. Se desea demostrar que $Z$ tiene una distribución normal con media 0 y varianza 1. Se tiene la información que $Y - \mu$ tiene función generadora de momento ${e}^{{t}^{2}{\alpha}^{2}/2}$. Entonces usando el método explicado se tiene. 
+
+\begin{align*}
+    {m}_{Z}(t) = E({e}^{tZ}) &= E\left[{e}^{(t/\sigma)(Y-\mu)}\right] = {m}_{(Y-\mu)}\left(\frac{t}{\sigma}\right)\\
+    &= {e}^{{(t/\sigma)}^{2}({\sigma}^{2}/2)} = {e}^{{t}^{2}/2}. 
+\end{align*}
+
+Al comparar ${m}_{Z}(t)$ con la función generadora de moemento de una variable aleatorias normal, veremos que $Z$ debe estar normalmente distribuida con $E(Z)= 0$ y $V(Z)=1$. 
+\end{tcolorbox}
+
+Este método es con frecuencia muy útil para halla las distribuciones de sumas de variables aleatorias independientes. 
+
+\begin{tcolorbox}[title = Teorema 6.2]
+Sean ${Y}_{1},{Y}_{2}, \ldots,{Y}_{n}$ variables aleatorias independientes con funciones generadoras de momento ${m}_{{Y}_{1}}, {m}_{{Y}_{2}}, \ldots, {m}_{{Y}_{n}}$, respectivamente. Si $U=$${Y}_{1} +$$ {Y}_{2} +$$\cdots +{Y}_{n}$, entonces
+
+\begin{align*}
+    {m}_{U}(t) = {m}_{{Y}_{1}}(t) \times {m}_{{Y}_{2}}(t) \times \cdots \times {m}_{{Y}_{n}}(t) 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Sabemos que, como las variables aleatorias ${Y}_{1},{Y}_{2}, \ldots, {Y}_{n}$ son independientes (vea el Teorema 5.9),
+
+\begin{align*}
+    {m}_{U}(t) &= E\left[{e}^{t({Y}_{1}  + \cdots + {Y}_{n})}\right] = E\left({e}^{t{Y}_{1}}{e}^{t{Y}_{2}}\cdots {e}^{t{Y}_{n}}\right) \\
+    &= E({e}^{t{Y}_{1}})\times E({e}^{t{Y}_{2}}) \times \cdots \times E({e}^{t{Y}_{1}})
+\end{align*}
+
+Entonces, por la definición de funciones generadoras de momentos, 
+
+\begin{align*}
+    {m}_{U}(t) = {m}_{{Y}_{1}}(t)\times {m}_{{Y}_{2}}(t) \times \cdots \times {m}_{{Y}_{n}}(t)
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 6.3]
+Sean ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ variables aleatorias independientes normalmente distribuidas con $E({Y}_{i}) = {\mu}_{i}$ y $V({Y}_{i}) = {\sigma}_{i}^{2}$, para $i=1,2,\ldots,n$, y sean ${a}_{1},{a}_{2},\ldots,{a}_{n}$ constantes. Si 
+
+\begin{align*}
+    U = \sum_{i=1}^{n}{{a}_{i}{Y}_{i}} = {a}_{1}{Y}_{1} + {a}_{2}{Y}_{2} + \cdots + {a}_{n}{Y}_{n}
+\end{align*}
+
+entonces $U$ es una variable aleatoria normalmente distribuida con 
+
+\begin{align*}
+    E(U) = \sum_{i=1}^{n}{{a}_{i}{\mu}_{i}} = {a}_{1}{\mu}_{1} + {a}_{2}{\mu}_{2} + \cdots + {a}_{n}{\mu}_{n}
+\end{align*}
+
+y 
+
+\begin{align*}
+    V(U) = \sum_{i=1}^{n}{{a}_{i}^{2}{\sigma}_{i}^{2}} = {a}_{1}^{2}{\sigma}_{1}^{2} + {a}_{2}^{2}{\sigma}_{2}^{2} + \cdots + {a}_{n}^{2}{\sigma}_{n}^{2}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Cuando ${Y}_{i}$ está normalmente distribuida con media ${\mu}_{i}$ y varianza ${\sigma}_{i}^{2}$, ${Y}_{i}$ tiene función generadora de moemento dada por 
+
+\begin{align*}
+    {m}_{{Y}_{i}}(t) = \exp{\left({\mu}_{i}t + \frac{{\sigma}_{i}^{2}{t}^{2}}{2}\right)}
+\end{align*}
+
+[Recuerde que $\exp(\cdot)$ es una forma más cómoda de escribir ${e}^{(\cdot)}$ cuando el término en el exponente es largo o complejo.] Por lo tanto, ${a}_{i}{Y}_{i}$ tiene función generadora de momento dada por 
+
+\begin{align*}
+    {m}_{{a}_{i}{Y}_{i}}(t) &= E({e}^{t{a}_{i}{Y}_{i}}) = {m}_{{Y}_{i}}({a}_{i}t) \\
+    &= \exp{ \left({\mu}_{i}{a}_{i}t + \frac{{a}_{i}^{2}{\sigma}_{i}^{2}{t}^{2}}{2}\right)}
+\end{align*}
+
+Debido a que las variables aleatorias ${Y}_{i}$ son independientes, las variables aleatorias ${a}_{i}{Y}_{i}$ son independientes, para $i=1,2,\ldots,n$ y el Teorema 6.2 implica que 
+
+\begin{align*}
+    &{m}_{U}(t) = {m}_{{a}_{1}{Y}_{1}}(t) \times {m}_{{a}_{2}{Y}_{2}}(t) \times \cdots \times {m}_{{a}_{n}{Y}_{n}}(t)   \\
+    &= \exp{\left({\mu}_{1}{a}_{1}t + \frac{{a}_{1}^{2}{\sigma}_{1}^{2}{t}^{2}}{2}\right)} \times \cdots \times \exp{\left({\mu}_{n}{a}_{n}t + \frac{{a}_{n}^{2}{\sigma}_{n}^{2}{t}^{2}}{2}\right)} \\
+    &= \exp{\left( t \sum_{i=1}^{n}{{a}_{i}{\mu}_{i}} + \frac{{t}^{2}}{2}\sum_{i=1}^{n}{{a}_{i}^{2}{\sigma}_{i}^{2}}\right)}
+\end{align*}
+
+Entonces, $U$ tiene una distribución normal con media $ \sum_{i=1}^{n}{{a}_{i}{\mu}_{i}}$ y varianza $ \sum_{i=1}^{n}{{a}_{i}^{2}{\sigma}_{i}^{2}}$.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 6.4]
+    Sean ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ definidas como en el Teorema 6.3 y definimos ${Z}_{i}$ por 
+
+    \begin{align*}
+        {Z}_{i} &= \frac{{Y}_{i} - {\mu}_{i}}{{\sigma}_{i}} & i &= 1,2,\ldots, n
+    \end{align*}
+
+    Entonces $\displaystyle \sum_{i=1}^{n}{{Z}_{i}^{2}}$ tiene una distribución ${\chi}^{2}$ con $n$ grados de libertad. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Como ${Y}_{i}$ está normalmente distribuida con media ${\mu}_{i}$ y varianza ${\sigma}_{i}^{2}$, entonces ${Z}_{i}$ tiene distribución normal con media 0 y varianza 1 como se vio en un resultado anterior. Del Ejemplo 6.11, entonces tenemos que ${Z}_{i}^{2}$ es una variable aleatoria con distribución ${\chi}^{2}$ con 1 grado de libertad. En consecuencia, 
+
+\begin{align*}
+    {m}_{{Z}_{i}^{2}}(t) = {(1 - 2t)}^{-1/2}
+\end{align*}
+
+y del Teorema 6.2, con $V= \displaystyle \sum_{i=1}^{n}{{Z}_{i}^{2}}$, 
+
+\begin{align*}
+    {m}_{V}(t) &= {m}_{{Z}_{1}^{2}}(t) \times {m}_{{Z}_{2}^{2}}(t) \times \cdots \times {m}_{{Z}_{n}^{2}}(t) \\
+    &= {(1 - 2t)}^{-1/2} \times {(1 - 2t)}^{-1/2} \times \cdots \times {(1 - 2t)}^{-1/2} \\
+    &= {(1 - 2t)}^{-n/2}
+\end{align*}
+
+Como las funciones generadoras de momento son únicas, $V$ tiene una distribución ${\chi}^{2}$ con $n$ grados de libertad. 
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Resumen del método de las funciones generadoras de momento}
+
+Sea $U$ una función de las variables aleatorias ${Y}_{1}$, ${Y}_{2}$, $\ldots$, ${Y}_{n}$. 
+
+\begin{enumerate}
+    \item[1.] Encuentre la función generadora de moemento para $U$, ${m}_{U}(t)$. 
+
+    \item[2.] Compare ${m}_{U}(t)$ con otras funciones generadoras de momento bien conocidas. Si ${m}_{U}(t)= {m}_{V}(t)$ para todos los valores de $t$, el Teorema 6.1 implica que $U$ y $V$ tienen distribuciones idénticas. 
+\end{enumerate}
+
+\end{tcolorbox}
+
+
+\section{\textbf{6.6} Transformaciones multivariantes usando jacobianos}
+
+Este método se puede utilizar para encontrar la distribución conjunta de varias funciones de variables aleatorias. 
+
+\begin{tcolorbox}
+\textbf{Método de las transformaciones bivariadas}
+
+Suponga que ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias continuas con función de densidad conjunta ${f}_{{Y}_{1},{Y}_{2}}({y}_{1},{y}_{2})$ y que para toda $({y}_{1},{y}_{2})$ tal que ${f}_{{Y}_{1},{Y}_{2}}({y}_{1},{y}_{2})>0$. 
+
+\begin{align*}
+    {u}_{1} &= {h}_{1}({y}_{1},{y}_{2}) & {u}_{2} &={h}_{2}({y}_{1},{y}_{2})
+\end{align*}
+
+es una transformación uno a uno de $({y}_{1},{y}_{2})$ y $({u}_{1},{u}_{2})$ con inversa 
+
+\begin{align*}
+    {y}_{1} &= {h}_{1}^{-1}({u}_{1},{u}_{2}) & {y}_{2} &= {h}_{2}^{-1}({u}_{1},{u}_{2})
+\end{align*}
+
+Si ${h}_{1}^{-1}({u}_{1},{u}_{2})$ y ${h}_{2}^{-1}({u}_{1},{u}_{2})$ tienen derivadas parciales continuas con respecto a ${u}_{1}$ y ${u}_{2}$ y jacobiano 
+
+\begin{align*}
+    J &= det\left[\begin{matrix} \frac{\partial {h}_{1}^{-1}}{\partial {u}_{1}} & \frac{\partial {h}_{1}^{-1}}{\partial {u}_{2}} \\ \frac{\partial {h}_{2}^{-1}}{\partial {u}_{1}} & \frac{\partial {h}_{2}^{-1}}{\partial {u}_{2}}\end{matrix}\right] = \frac{\partial{h}_{1}^{-1}}{\partial {u}_{1}} \frac{\partial {h}_{2}^{-1}}{\partial {u}_{2}} - \frac{\partial{h}_{2}^{-1}}{\partial {u}_{1}} \frac{\partial {h}_{1}^{-1}}{\partial {u}_{2}}  \\
+    & \neq 0
+\end{align*}
+
+entonces la densidad conjunta de ${U}_{1}$ y ${U}_{2}$ es 
+
+\begin{align*}
+    {f}_{{U}_{1},{U}_{2}}({u}_{1},{u}_{2}) = {f}_{{Y}_{1},{Y}_{2}}\left({h}_{1}^{-1}({u}_{1},{u}_{2}),{h}_{2}^{-1}({u}_{1},{u}_{2})\right) |J|
+\end{align*}
+
+donde $|J|$ es el valor absoluto del jacobiano. 
+\end{tcolorbox}
+
+Es \emph{necesario asegurarse que la transformación bivariante} ${u}_{1} = h({y}_{1},{y}_{2})$, ${u}_{2} = {h}_{2}({y}_{1},{y}_{2})$ \emph{es una tranformación biunívoca para toda} $({y}_{1},{y}_{2})$ \emph{tal que} ${f}_{{Y}_{1},{Y}_{2}}({y}_{1},{y}_{2})>0$. Si esta transformación bivarinte no es biunívoca  y este método se aplica a ciegas, la función resultante de 'densidad' no tendrá las propiedades necesarias de una función de densidad válida. 
+
+Este método se puede extender a más de dos funciones de variables aleatorias. Sea ${Y}_{1},{Y}_{2},\ldots,{Y}_{k}$ son variables aleatorias continuas conjuntas y 
+
+\begin{align*}
+    {U}_{1} = {h}_{1}({Y}_{1},\ldots ,{Y}_{k}), {U}_{2} = {h}_{2}({Y}_{1},\ldots,{Y}_{k}), &\ldots,\\
+    &{U}_{k}={h}_{k}({Y}_{1},\ldots, {Y}_{k})
+\end{align*}
+
+donde la transformación 
+
+\begin{align*}
+    {u}_{1} ={h}_{1}({y}_{1},\ldots,{y}_{k}), {u}_{2} = {h}_{2}({y}_{1},\ldots,{y}_{k}), &\ldots, \\
+    &{u}_{k} = {h}_{k}({y}_{1},\ldots,{y}_{k})
+\end{align*}
+
+es una transformación biunívoca de $({y}_{1}$,${y}_{2}$,$\ldots$,${y}_{k})$ en $({u}_{1}$,${u}_{2}$,$\ldots$,${u}_{k})$ con inversa 
+
+\begin{align*}
+    {y}_{1} = {h}_{1}^{-1}({u}_{1},\ldots,{u}_{k}), {y}_{2} = {h}_{2}^{-1}({u}_{1}&,\ldots,{u}_{k}), \ldots,\\ 
+    &{y}_{k} = {h}_{k}^{-1}({u}_{1},\ldots,{u}_{k})
+\end{align*}
+
+y ${h}_{1}^{-1}({u}_{1},{u}_{2}, \ldots, {u}_{k}),{h}_{2}^{-1}({u}_{1},{u}_{2},\ldots, {u}_{k}), \ldots, {h}_{k}^{-1}({u}_{1},{u}_{2},\ldots,{u}_{k})$ tienen derivadas parciales continuas con respecto a ${u}_{1}$,${u}_{2}$,$\ldots$,${u}_{k}$ y \emph{jacobiano} 
+
+\begin{align*}
+    J = det \displaystyle \left[\begin{matrix}
+        \displaystyle \frac{\partial {h}_{1}^{-1}}{\partial {u}_{1}} & \displaystyle \frac{\partial {h}_{1}^{-1}}{\partial {u}_{2}} & \cdots & \displaystyle \frac{\partial {h}_{1}^{-1}}{\partial {u}_{k}} \\
+        \displaystyle \frac{\partial {h}_{2}^{-1}}{\partial {u}_{1}} & \displaystyle \frac{\partial {h}_{2}^{-1}}{\partial {u}_{2}} & \cdots & \displaystyle \frac{\partial {h}_{2}^{-1}}{\partial {u}_{k}} \\
+        \vdots & \vdots  & \ddots & \vdots \\
+        \displaystyle \frac{\partial {h}_{k}^{-1}}{\partial {u}_{1}} & \displaystyle \frac{\partial {h}_{k}^{-1}}{\partial {u}_{2}} & \cdots & \displaystyle \frac{\partial {h}_{k}^{-1}}{\partial {u}_{k}} 
+    \end{matrix}\right] \neq 0
+\end{align*}
+
+entonces se puede usar un resultado similar al presentado en esta sección para determinar la densidad conjunta de ${U}_{1}$, ${U}_{2}$, $\ldots$, ${U}_{k}$. Esto requiere calcular el determinante de una matriz $k\times k$. 
+
+\section{\textbf{6.7} Estadísticos de orden}
+
+Numerosas funciones de variables aleatorias de interés en la práctica dependen de las magnitudes relativas de las variables observadas. Esto quiere decir que con frecuencia ordenamos variables aleatorias observadas de acuerdo con sus magnitudes. Las variables ordenadas resultantes se denominan \emph{estadísticos de orden}. 
+
+Formalmente, denotamos con ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ a variables aleatorias continuas e independientes, con función de distribución $F(y)$ y función de densidad $f(y)$. Denotamos las variables aleatorias ordenadas ${Y}_{i}$ por ${Y}_{(1)}, {Y}_{(2)}, \ldots,{Y}_{(n)}$, donde ${Y}_{(1)} \leq {Y}_{(2)} \leq \cdots \leq {Y}_{(n)}$. Usando esta notación, 
+
+\begin{align*}
+    {Y}_{(1)} = \min{({Y}_{1},{Y}_{2},\ldots,{Y}_{n})}
+\end{align*}
+
+es la mínima de las variables aleatorias ${Y}_{i}$ y 
+
+\begin{align*}
+    {Y}_{(n)} = \max{({Y}_{1},{Y}_{2},\ldots,{Y}_{n})}
+\end{align*}
+
+es la máxima de las variables aleatorias ${Y}_{i}$. Las funciones de densidad de probabilidad para ${Y}_{(1)}$ y ${Y}_{(n)}$ se pueden determinar usando el método de las funciones de distribución. Primero vamos a deducir la función de densidad de ${Y}_{(n)}$. Como ${Y}_{(n)}$ es la máxima de ${Y}_{1},{Y}_{2},\dots,{Y}_{n}$, el evento $({Y}_{(n)} \leq y)$ ocurrirá si y sólo si los eventos $({Y}_{i} \leq y)$ ocurren para toda $i=1,2,\ldots,n$. Esto es 
+
+\begin{tcolorbox}[title = Teorema 6.5]
+ Sean ${Y}_{1},\ldots,{Y}_{n}$ variables aleatorias continuas distribuidas idénticamente e independientes, con función de distribución común $F(y)$ y función de densidad común $f(y)$. Si ${Y}_{(k)}$ denota el estadístico de orden $k$-ésimo, entonces la función de densidad de ${Y}_{(k)}$ está dada por 
+
+ \begin{align*}
+     {g}_{(k)}({y}_{k}) &= \frac{n!}{(k-1)!(n-k)!}{[F({y}_{k})]}^{k-1}\\
+     &\times{[1 - F({y}_{k})]}^{n-k}f({y}_{k}),
+ \end{align*}
+
+donde $-\infty < {y}_{k} < \infty$. Si $j$ y $k$ son dos enteros tales que $1 \leq j < k \leq n$, la densidad conjunta de ${Y}_{(j)}$ y ${Y}_{(k)}$ está dada por 
+
+\begin{align*}
+    {g}_{(j)(k)}({y}_{j},{y}_{k}) &= \frac{n!}{(j-1)!(k-1-j)!(n-k)!}{[F({y}_{j})]}^{j-1}\\
+    & \times {[F({y}_{k}) - F({y}_{j})]}^{k-1-j} \\
+    &\times {[1 - F({y}_{k})]}^{n-k}f({y}_{j})f({y}_{k})
+\end{align*}
+
+donde $-\infty < {y}_{j} < {y}_{k} < \infty$. 
+\end{tcolorbox}
+
+
+
+
+%Great symbol look-up site: \href{http://detexify.kirelabs.org/}{Detexify}\\
+%\href{http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf}{\LaTeX\ Mathematical Symbols}\\
+%\href{ftp://tug.ctan.org/pub/tex-archive/info/symbols/comprehensive/symbols-letter.pdf}{The Comprehensive \LaTeX\ Symbol List}\\ 
+%\href{http://mirrors.med.harvard.edu/ctan/info/lshort/english/lshort.pdf}{The Not So Short Introduction to \LaTeX\ 2$\varepsilon$}\\
+
+\end{multicols}
+
+%\SetWatermarkHorCenter{0.65\paperwidth}
+\end{document}
