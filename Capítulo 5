@@ -1,0 +1,831 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overleaf Example: A quick guide to LaTeX
+%
+% Original Source: Dave Richeson (divisbyzero.com), Dickinson College
+% Modified By: Paul Gessler, Overleaf (overleaf.com)
+% 
+% A one-size-fits-all LaTeX cheat sheet. Kept to two pages, so it 
+% can be printed (double-sided) on one piece of paper
+% 
+% Feel free to distribute this example, but please keep the referral
+% to divisbyzero.com
+% 
+% Guidance on the use of the Overleaf logos can be found here:
+% https://www.overleaf.com/for/partners/logos 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use Overleaf: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[10pt,landscape,letterpaper]{article}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{spverbatim}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,urlcolor=olgreen]{hyperref}
+\usepackage{booktabs}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
+\setsansfont{Fira Sans}
+\usepackage{tcolorbox} 
+\setmonofont{Inconsolata}
+%\usepackage{unicode-math}
+%\setmathfont{TeX Gyre Pagella Math}
+\usepackage{microtype}
+% dirty fix for microtype
+\makeatletter
+\def\MT@is@composite#1#2\relax{%
+  \ifx\\#2\\\else
+    \expandafter\def\expandafter\MT@char\expandafter{\csname\expandafter
+                    \string\csname\MT@encoding\endcsname
+                    \MT@detokenize@n{#1}-\MT@detokenize@n{#2}\endcsname}%
+    % 3 lines added:
+    \ifx\UnicodeEncodingName\@undefined\else
+      \expandafter\expandafter\expandafter\MT@is@uni@comp\MT@char\iffontchar\else\fi\relax
+    \fi
+    \expandafter\expandafter\expandafter\MT@is@letter\MT@char\relax\relax
+    \ifnum\MT@char@ < \z@
+      \ifMT@xunicode
+        \edef\MT@char{\MT@exp@two@c\MT@strip@prefix\meaning\MT@char>\relax}%
+          \expandafter\MT@exp@two@c\expandafter\MT@is@charx\expandafter
+            \MT@char\MT@charxstring\relax\relax\relax\relax\relax
+      \fi
+    \fi
+  \fi
+}
+% new:
+\def\MT@is@uni@comp#1\iffontchar#2\else#3\fi\relax{%
+  \ifx\\#2\\\else\edef\MT@char{\iffontchar#2\fi}\fi
+}
+\makeatother
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{margin=0.4in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\sffamily\large}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\sffamily\normalsize\itshape}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\itshape}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+% -----------------------------------------------------------------------
+
+\usepackage{academicons}
+
+%\usepackage{draftwatermark,afterpage,xcolor}
+%\definecolor{olgreen}{HTML}{4f9c45}
+%\SetWatermarkText{\aiOverleaf}
+%\SetWatermarkFontSize{0.9\paperheight}
+%\SetWatermarkAngle{0}
+%\SetWatermarkColor[HTML]{EDF5EC}
+%\SetWatermarkLightness{0.95}
+%\SetWatermarkHorCenter{0.35\paperwidth}
+
+\begin{document}
+\footnotesize
+%\raggedright
+
+\begin{center}
+  {\huge\sffamily\bfseries Capítulo 5 Distribuciones de probabilidad multivariantes}  \\
+\end{center}
+\setlength{\premulticols}{0pt}
+\setlength{\postmulticols}{0pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{1.8em}
+\begin{multicols}{3}
+
+\section{\textbf{5.1} Introducción}
+
+La intersección de dos o más eventos es frecuentemente de interés para un experimentador. Suponga que ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ denota los resultados de $n$ intentos sucesivos de un experimento. Un conjunto específico de resultados o mediciones muestrales puede ser expresado en términos de la intersección de los $n$ eventos $({Y}_{1} = {y}_{1}), ({Y}_{2} = {y}_{2}), \ldots, ({Y}_{n} = {y}_{n})$, que denotaremos como $({Y}_{1} = {y}_{1}, {Y}_{2} = {y}_{2}, \ldots, {Y}_{n} = {y}_{n})$, que denotaremos como $({Y}_{1} = {y}_{1}, {Y}_{2} = {y}_{2}, \ldots, {Y}_{n} = {y}_{n})$ o bien como $({y}_{1}, {y}_{2}, \ldots, {y}_{n})$. El cálculo de la probabilidad de esta intersección es esencial para hacer inferencias de la población de la cual se tomo. 
+
+\section{\textbf{5.2} Distribuciones de probabilidad bivariantes y multivariantes}
+
+Se pueden definir muchas variables aleatorias sobre el mismo espacio muestral. Por ejemplo al tirar un par de dados el espacio muestral es de 36 puntos. Que corresponden a los valores posibles de ambos dados. Se puede decir que los valores que cada dado puede tomar es una variable aleatoria entonces al tirar ambos se estaría buscando la probabilidad conjunta de dos variables aleatorias. 
+
+\begin{tcolorbox}[title = Definición 5.1]
+Sean ${Y}_{1}$ y ${Y}_{2}$ variables aleatorias discretas. La \emph{función de probabilidad conjunta} (o bivariante) para ${Y}_{1}$ y ${Y}_{2}$ está dada por 
+
+\begin{align*}
+p({y}_{1},{y}_{2}) &= P({Y}_{1}={y}_{1},{Y}_{2}={y}_{2}) 
+\end{align*}
+
+cuando $-\infty < {y}_{1} < \infty, -\infty < {y}_{2} < \infty $.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.1]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias discretas con función de probabilidad conjunta $p({y}_{1},{y}_{2})$, entonces 
+
+\begin{enumerate}
+
+\item[1.] $p({y}_{1},{y}_{2}) \geq 0$ para toda ${y}_{1},{y}_{2}$. 
+
+\item[2.] $\sum_{{y}_{1}{y}_{2}}{p({y}_{1},{y}_{2})=1}$, donde la suma es para todos los valores $({y}_{1},{y}_{2})$ a los que se asignan probabilidades difernetes de cero. 
+\end{enumerate}
+\end{tcolorbox}
+
+Al igual que en el caso univariado, la función de probabilidad conjunto para variables aleatorias discretas a veces se denomina \emph{función de masa de probabilidad conjunta}. De la misma manera la distinción entre variables aleatorias continuas conjuntas y discretas conjuntas puede ser caracterizado en términos de sus funciones de distribución. 
+
+\begin{tcolorbox}[title = Definición 5.2]
+Para cualesquiera variables aleatorias ${Y}_{1}$ y ${Y}_{2}$, la función de distribución (bivariante) conjunta $F({y}_{1},{y}_{2})$ es 
+
+\begin{align*}
+F({y}_{1},{y}_{2}) &= P({Y}_{1} \leq {y}_{1}, {Y}_{2} \leq {y}_{2})  
+\end{align*}
+
+cuando $ -\infty < {y}_{1} < \infty, -\infty < {y}_{2} < \infty$
+\end{tcolorbox}
+
+Para dos variables discretas ${Y}_{1}$ y ${Y}_{2}$, $F({y}_{1},{y}_{2})$ está dada por 
+
+\begin{align*}
+F({y}_{1},{y}_{2}) = \sum_{{t}_{1}\leq {y}_{1}}\sum_{{t}_{2}\leq {y}_{2}}{p({t}_{1},{t}_{2})}
+\end{align*}
+
+Se dice que dos variables aleatorias son coninuas conjuntas si su función de distribución conjunta $F({y}_{1},{y}_{2})$ es continua en ambos segmentos. 
+
+\begin{tcolorbox}[title = Definición 5.3]
+Sean ${Y}_{1}$ y ${Y}_{2}$ variables aleatorias continuas con función de distribución conjunta $F({y}_{1}.{y}_{2})$. Si existe una función no negativa $f({y}_{1}.{y}_{2})$, tal que 
+
+\begin{align*}
+F({y}_{1},{y}_{2}) = \int_{-\infty}^{{y}_{1}}\int_{-\infty}^{{y}_{2}}{f({t}_{1},{t}_{2})d{t}_{1}d{t}_{1}}
+\end{align*}
+
+Para toda $-\infty < {y}_{1}<\infty$, $-\infty < {y}_{2} < \infty$, entonces se dice que ${Y}_{1}$ y ${Y}_{2}$ son \emph{variables aleatorias continuas conjuntas}. La función $f({y}_{1},{y}_{2})$ recibe el nombre de \emph{función de densidad de probabilidad conjunta}. 
+\end{tcolorbox}
+
+De la misma manera que en el caso univariado, las funciones de distribución acumulativas satisfacen ciertas propiedades las cuales se muestran en el siguiente teorema. 
+
+\begin{tcolorbox}[title = Teorema 5.2]
+ Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias con función de distribución conjunta $F({y}_{1},{y}_{2})$, entonces 
+
+ \begin{enumerate}
+
+\item[1.] $F(-\infty,\infty) = F(-\infty, {y}_{2}) = F({y}_{1},-\infty) = 0$. 
+
+\item[2.] $F(\infty,\infty) = 1$. 
+
+\item[3.] Si ${y}_{1}^{*} \geq {y}_{1}$ y ${y}_{2}^{*} \geq {y}_{2}$, entonces 
+
+$$
+F({y}_{1}^{*},{y}_{2}^{*}) - F({y}_{1}^{*},{y}_{2}) - F({y}_{1},{y}_{2}^{*}) + F({y}_{1},{y}_{2}) \geq 0 $$
+
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.3]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias continuas conjuntas con una función de densidad conjunta dada por $f({y}_{1},{y}_{2})$, entonces 
+
+\begin{enumerate}
+
+\item[1.] $f({y}_{1},{y}_{2}) \geq 0$ para toda ${y}_{1}$, ${y}_{2}$. 
+
+\item[2.] $\displaystyle \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}{f({y}_{1},{y}_{2})d{y}_{1}d{y}_{2}}=1$.
+
+\end{enumerate}
+\end{tcolorbox}
+
+Para el caso univariado, las áreas bajo la densidad de probabilidad para un intervalo corresponden a probabilidades. De igual manera la función de probabilidad bivariante $f({y}_{1},{y}_{2})$ traza una superficie de densidad de probabilidad sobre el plano $({y}_{1},{y}_{2})$ como se muestra en la siguiente figura.
+
+{\hfill\includegraphics[width=0.8\hsize]{figures/fig_5_1.png} \hfill
+}
+
+Los volúmenes bajo esta superficie representan probabilidades. Así, $P({a}_{1} \leq {Y}_{1} \leq {a}_{2}, {b}_{1} \leq {Y}_{2} \leq {b}_{2})$ es el volumen sombreado que se ve en la figura anterior y a continuación. 
+
+\begin{align*}
+\int_{{b}_{1}}^{{b}_{2}}\int_{{a}_{1}}^{{a}_{2}}{f({y}_{1},{y}_{2})d{y}_{1}d{y}_{2}}
+\end{align*}
+
+Esos métodos vistos se pueden generalizar para una función de probabilidad (o función de densidad de probabilidad) para la intersección de $n$ eventos $({Y}_{1} = {y}_{1}, {Y}_{2}={y}_{2}, \ldots,{Y}_{n}={y}_{n})$ La función de probabilidad conjunta correspondiente al caso discreto está dada por 
+
+\begin{align*}
+p({y}_{1},{y}_{2},\ldots,{y}_{n}) = P({Y}_{1}={y}_{1}, {Y}_{2} = {y}_{2}, \ldots, {Y}_{n} = {y}_{n}) 
+\end{align*}
+
+En el caso continuo se tiene lo siguiente, 
+
+\begin{align*}
+P({Y}_{1} \leq {y}_{1},{Y}_{2} \leq {y}_{2}, \ldots, {Y}_{n} \leq {y}_{n}) &= F({y}_{1},\ldots ,{y}_{n})\\
+&= \int_{-\infty}^{{y}_{1}}\int_{-\infty}^{{y}_{2}} \cdots \int_{-\infty}^{{y}_{n}}{f({t}_{1},{t}_{2},\ldots,{t}_{n})}\\
+&d{t}_{n}\cdots d{t}_{1}
+\end{align*}
+
+para todo conjunto de número reales $({y}_{1},{y}_{2},\ldots,{y}_{n})$. Por último la función de denisdad conjunta de ${Y}_{1},\ldots,{Y}_{n}$ está dada por $f({y}_{1},\ldots,{y}_{n})$. 
+
+\section{\textbf{5.3} Distribuciones de probabilidad marginal y condicional}
+
+Recuerde que los valores distintos tomados por una variable aleatoria discreta represntan eventos mutuamente excluyentes. De manera análoga, para todos los distintos pares de valores ${y}_{1}$, ${y}_{2}$, los eventos bivariados $({Y}_{1} = {y}_{1}, {Y}_{2} = {y}_{2})$, representados por $({y}_{1},{y}_{2})$, son eventos mutuamente excluyentes. De esto se deduce que el evento univariado $({Y}_{1} = {y}_{1})$ es la unión de eventos bivariados del tipo $({Y}_{1}={y}_{1},{Y}_{2}={y}_{2})$, con la unión tomada para todos los posibles valores de ${y}_{2}$. 
+
+\begin{tcolorbox}[title = Definición 5.4]
+\begin{enumerate}
+    \item [\textbf{a}] Sean ${Y}_{1}$ y ${Y}_{2}$ variables aleatorias discretas conjuntas con función de probabilidad $p({y}_{1},{y}_{2})$. Entonces las \emph{funiciones de probabilidad marginal} de ${Y}_{1}$ y ${Y}_{2}$, respectivamente, están dadas por 
+
+    \begin{align*}
+        {p}_{1}({y}_{1}) &= \sum_{\text{todos ${y}_{2}$}}{p({y}_{1},{y}_{2})} \\
+        {p}_{2}({y}_{2}) &= \sum_{\text{todos ${y}_{2}$}}{p({y}_{1},{y}_{2})} 
+    \end{align*}
+
+    \item[\textbf{b}] Sean ${Y}_{1}$ y ${Y}_{2}$ variabels aleatorias continuas conjuntas con función de densidad conjunta $f({y}_{1},{y}_{2})$. Entonces las \emph{funciones de densidad marginal} de ${Y}_{1}$ y ${Y}_{2}$, respectivamente, están dadas por 
+
+    \begin{align*}
+        {f}_{1}({y}_{1}) &= \int_{-\infty}^{\infty}{f({y}_{1},{y}_{2})d{y}_{2}} \\
+        {f}_{2}({y}_{2}) &= \int_{-\infty}^{\infty}{f({y}_{1},{y}_{2})d{y}_{1}}
+    \end{align*}
+\end{enumerate}
+\end{tcolorbox}
+
+Llevemos ahora nuestra atención a distribuciones condicionales, viendo primero al caso discreto. 
+
+\begin{tcolorbox}[title = Definición 5.5]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias discretas conjuntas con función de probabilidad conjunta $p({y}_{1},{y}_{2})$ y funciones de probabilidad marginal ${p}_{1}({y}_{1})$ y ${p}_{2}({y}_{2})$, respectivamente, entonces la \emph{función de probabilidad discreta condicional} de ${Y}_{1}$ dada ${Y}_{2}$ es 
+
+\begin{align*}
+    p({y}_{1}|{y}_{2}) &= P({Y}_{1} = {y}_{1} |{Y}_{2} = {y}_{2}) = \frac{P({Y}_{1}={y}_{1}, {Y}_{2}={y}_{2})}{P({Y}_{2}={y}_{2})} \\
+    &= \frac{p({y}_{1},{y}_{2})}{{p}_{2}({y}_{2})}
+\end{align*}
+
+siempre que ${p}_{2}({y}_{2})>0$. 
+\end{tcolorbox}
+
+En el caso continuo no se obtiene la función de probabilidad condicional de forma sencilla. Esto es porque si ${Y}_{1}$ y ${Y}_{2}$ son continuas, $P({Y}_{1}={y}_{1}|{Y}_{2}={y}_{2})$ no se puede definir por que $({Y}_{1}={y}_{1})$ y $({Y}_{2}={y}_{2})$ son eventos con probabilidad cero. 
+
+\begin{tcolorbox}[title = Definición 5.6]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias continuas conjuntas con función de densidad conjunta $f({y}_{1},{y}_{2})$, entonces la \emph{función de distribución condicional} de ${Y}_{1}$ dado que ${Y}_{2}={y}_{2}$ es 
+
+\begin{align*}
+    F({y}_{1}|{y}_{2}) = P({Y}_{1} \leq {y}_{1} | {Y}_{2} ={y}_{2})
+\end{align*}
+\end{tcolorbox}
+
+Como se esta tratando con una variable aleatoria continua entonces es necesario utilizar integrales. Entonces si se quiere encontrar $F({y}_{1})$ no se puede sumar sobre todos los valores de ${Y}_{2}$. Pero se puede hacer algo análogo al multiplicarlo por ${f}_{2}({y}_{2})$ para obtener
+
+\begin{align*}
+    F({y}_{1}) = \int_{-\infty}^{\infty}{F({y}_{1}|{y}_{2}){f}_{2}({y}_{2})d{y}_{2}}
+\end{align*}
+
+De consideraciones previas se tiene
+
+\begin{align*}
+    F({y}_{1}) &= \int_{-\infty}^{{y}_{1}}{{f}_{1}({t}_{1})d{t}_{1}} = \int_{-\infty}^{{y}_{1}}{\left[\int_{-\infty}^{\infty}{f({t}_{1},{y}_{2})d{y}_{2}}\right]d{t}_{1}} \\
+    &= \int_{-\infty}^{\infty}\int_{-\infty}^{{y}_{1}}{f({t}_{1},{y}_{2})d{t}_{1}d{y}_{2}}
+\end{align*}
+
+De estas dos expresiones para $F({y}_{1})$, debemos tener 
+
+\begin{align*}
+    F({y}_{1}|{y}_{2}){f}_{2}({y}_{2}) &= \int_{-\infty}^{{y}_{1}}{f({t}_{1},{y}_{2})d{t}_{1}} \\
+    F({y}_{1}|{y}_{2})&= \int_{-\infty}^{\infty}{\frac{f({t}_{1},{y}_{2})}{{f}_{2}({y}_{2})}d{t}_{1}}
+\end{align*}
+
+\begin{tcolorbox}[title = Definición 5.7]
+Sean ${Y}_{1}$ y ${Y}_{2}$ variables aleatorias continuas conjuntas con densidad conjunta $f({y}_{1},{y}_{2})$ y densidades marginales ${f}_{1}({y}_{1})$ y ${f}_{2}({y}_{2})$, respectivamente. Para cualquier ${y}_{2}$ tal que ${f}_{2}({y}_{2})>0$, la densidad condicional de ${Y}_{1}$ dada ${Y}_{2}={y}_{2}$ está dada por 
+
+\begin{align*}
+    f({y}_{1}|{y}_{2}) = \frac{f({y}_{1},{y}_{2})}{{f}_{2}({y}_{2})}
+\end{align*}
+
+y para cualquier ${y}_{1}$ tal que ${f}_{1}({y}_{1})>0$, la densidad condicional de ${Y}_{2}$ dada ${Y}_{1} = {y}_{1}$ está dada por 
+
+\begin{align*}
+    f({y}_{2}|{y}_{1}) = \frac{f({y}_{1},{y}_{2})}{{f}_{1}({y}_{1})}
+\end{align*}
+\end{tcolorbox}
+
+\section{\textbf{5.4} Variables aleatorias independientes}
+
+Se ha estudiado la independencia de eventos en capítulo anteriores. Esto se puede extender a variables aleatorias.  
+
+\begin{tcolorbox}[title = Definición 5.8]
+Sea ${Y}_{1}$ que tiene una función de distribución ${F}_{1}({y}_{1})$ y sea ${Y}_{2}$ que tiene una función de distribución ${F}_{2}({y}_{2})$, y $F({y}_{1},{y}_{2})$ es la función de distribución conjunta de ${Y}_{1}$ y ${Y}_{2}$. Entonces se dice que ${Y}_{1}$ y ${Y}_{2}$ son \emph{independientes} si y sólo si
+
+\begin{align*}
+    F({y}_{1},{y}_{2}) = {F}_{1}({y}_{1}){F}_{2}({y}_{2})
+\end{align*}
+
+para todo par de números reales $({y}_{1},{y}_{2})$. Si ${Y}_{1}$ y ${Y}_{2}$ no son independientes, se dice que son \emph{dependientes}. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.4]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables discretas con función de probabilidad conjunta $p({y}_{1},{y}_{2})$ y funciones de probabilidad marginal ${p}_{1}({y}_{1})$ y ${p}_{2}({y}_{2})$, respectivamente, entonces ${Y}_{1}$ y ${Y}_{2}$ son independientes si y sólo si 
+
+\begin{align*}
+    p({y}_{1},{y}_{2}) = {p}_{1}({y}_{1}){p}_{2}({y}_{2})
+\end{align*}
+
+para todos los pares de número reales $({y}_{1},{y}_{2})$.
+
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias continuas con función de densidad conjunta ${f}_{1}({y}_{1},{y}_{2})$ y funciones de densidad marginal ${f}_{1}({y}_{1})$ y ${f}_{2}({y}_{2})$, respectivamente, entonces ${Y}_{1}$ y ${Y}_{2}$ son independientes si y sólo si 
+
+\begin{align*}
+    f({y}_{1},{y}_{2}) ) {f}_{1}({y}_{1}) {f}_{2}({y}_{2})
+\end{align*}
+
+para todos los pares de número reales $({y}_{1},{y}_{2})$.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.5]
+Sean ${Y}_{1}$ y ${Y}_{2}$ que tienen densidad conjunta $f({y}_{1},{y}_{2})$ que es positiva si y sólo si $a \leq {y}_{1}\leq b$ y $c\leq {y}_{2} \leq d$, para constantes $a$, $b$, $c$ y $d$; y $f({y}_{1},{y}_{2})=0$ en otro caso. Entonces ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias independientes si y sólo si
+
+\begin{align*}
+    f({y}_{1},{y}_{2}) = g({y}_{1})h({y}_{2})
+\end{align*}
+
+donde $g({y}_{1})$ es una función no negativa de ${y}_{1}$ solamente y $h({y}_{2})$ es una función no negativa de ${y}_{2}$ solamente. 
+\end{tcolorbox}
+
+El beneficio del Teorema 5.5 es que en realidad no necesitamos obtener las densidades marginales. De hecho, las funciones $g({y}_{1})$ y $h({y}_{2})$ no necesitan ser funciones de densidad. 
+
+Finalmente la definición 5.8 se puede generalizar a $n$ dimensiones. Suponga que se tiene $n$ variables aleatorias ${Y}_{1},\ldots,{Y}_{n}$, donde ${Y}_{i}$ tiene función de distribución ${F}_{i}({y}_{i})$, para $i = 1,2,\ldots,n$; y que estas $n$ variables aleatorias tengan función de distribución conjunta $F({y}_{1},\ldots,{y}_{n})$. Entonces ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ son independientes si y sólo si 
+
+\begin{align*}
+    F({y}_{1},{y}_{2},\ldots,{y}_{n}) = {F}_{1}({y}_{1})\cdots {F}_{n}({y}_{n})
+\end{align*}
+
+para todos los números reales ${y}_{1},{y}_{2},\ldots,{y}_{n}$, son las formas equivalentes obvias para los casos discretos y continuos. 
+
+\section{\textbf{5.5} El valor esperado de una función de variables aleatorias} 
+
+\begin{tcolorbox}[title = Definición 5.9]
+Sea $g({Y}_{1},{Y}_{2},\ldots,{Y}_{k})$ una función de las variables aleatorias discretas, ${Y}_{1},{Y}_{2},\ldots,{Y}_{k}$, que tienen función de probabilidad $p({y}_{1},{y}_{2},\ldots,{y}_{k})$. Entonces el \emph{valor esperado} de $g({Y}_{1},{Y}_{2},\ldots,{Y}_{k})$ es 
+
+\begin{align*}
+    E[g({Y}_{1},\ldots,{Y}_{k})] = \sum_{\text{toda ${y}_{k}$}}\cdots \sum_{\text{toda ${y}_{1}$}}{g({y}_{1},\ldots,{y}_{k})p({y}_{1},\ldots,{y}_{k})}
+\end{align*}
+
+Si ${Y}_{1},{Y}_{2},\ldots,{Y}_{k}$ son variables aleatorias continuas con función de denisdad conjunta $f({y}_{1},{y}_{2},\ldots,{y}_{k})$, entonces 
+
+\begin{align*}
+    E[g({Y}_{1},\ldots,{Y}_{k})] &= \int_{-\infty}^{\infty}\cdots\int_{-\infty}^{\infty}{g({y}_{1},\ldots,{y}_{k})\times f({y}_{1},\ldots,{y}_{k})}\\
+    &d{y}_{1}\ldots,d{y}_{k}
+\end{align*}
+\end{tcolorbox}
+
+Se puede demostrar que la Definición 5.9 es consistente con la definición 4.5, en la que se define el valor esperado de una variable aleatorias univariada de la siguiente manera. Considere dos variables aleatorias ${Y}_{1}$ y ${Y}_{2}$ con función de densidad $f({y}_{1},{y}_{2})$. Deseamos hallar el valor esperado de $g({Y}_{1},{Y}_{2})={Y}_{1}$. De la definición anterior se tiene. 
+
+\begin{align*}
+    E({Y}_{1}) &= \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}{{y}_{1}f({y}_{1},{y}_{2})d{y}_{2}d{y}_{1}} \\
+    &= \int_{-\infty}^{\infty}{{y}_{1}\left[\int_{-\infty}^{\infty}{f({y}_{1},{y}_{2})d{y}_{2}}\right]d{y}_{1}}
+\end{align*}
+
+La cantidad dentro del paréntesis, por definición, es la función de densidad marginal para ${Y}_{1}$. Por lo tanto se puede obtener lo siguiente
+
+\begin{align*}
+    E({Y}_{1}) = \int_{-\infty}^{\infty}{{y}_{1}{f}_{1}({y}_{1})d{y}_{1}}
+\end{align*}
+
+\section{\textbf{ 5.6 } Teoremas especiales}
+
+\begin{tcolorbox}[title = Teorema 5.6]
+Sea $c$ una constante. Entonces 
+
+\begin{align*}
+    E(c) = c
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.7]
+Sea $g({Y}_{1},{Y}_{2})$ una función de las variables aleatorias ${Y}_{1}$ y ${Y}_{2}$ y sea $c$ una constante. Entonces 
+
+\begin{align*}
+    E[cg({Y}_{1},{Y}_{2})] = cE[g({Y}_{1},{Y}_{2})]
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.8]
+Sean ${Y}_{1}$ y ${Y}_{2}$ variables aleatorias y ${g}_{1}({Y}_{1},{Y}_{2})$, ${g}_{2}({Y}_{1},{Y}_{2})$, $\ldots$, ${g}_{k}({Y}_{1},{Y}_{2})$ funciones de ${Y}_{1}$ y ${Y}_{2}$. Entonces 
+
+\begin{align*}
+    E[&{g}_{1}({Y}_{1},{Y}_{2}) + {g}_{2}({Y}_{1},{Y}_{2})\cdots +{g}_{k}({Y}_{1},{Y}_{2})] \\
+    &= E[{g}_{1}({Y}_{1},{Y}_{2})] + E[{g}_{2}({Y}_{1},{Y}_{2})]+\cdots + E[{g}_{k}({Y}_{1},{Y}_{2})]
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.9]
+Sean ${Y}_{1}$ y ${Y}_{2}$ variables aleatorias independientes y sean $g({Y}_{1})$ y $h({Y}_{2})$ funciones sólo de ${Y}_{1}$ y ${Y}_{2}$, respectivamente. Entonces 
+
+\begin{align*}
+    E[g({Y}_{1})h({Y}_{2})] = E[g({Y}_{1})]E[h({Y}_{2})]
+\end{align*}
+
+siempre que existan los valores esperados. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Daremos la demostración del resultado para el caso continuo. Denotemos con $f({y}_{1},{y}_{2})$ la densidad conjunta de ${Y}_{1}$ y ${Y}_{2}$. El producto $g({Y}_{1})h({Y}_{2})$ es una función de ${Y}_{1}$ y ${Y}_{2}$. Entonces, por la Definición 5.9 y la suposición de que ${Y}_{1}$ y ${Y}_{2}$ son independientes, 
+
+\begin{align*}
+    E[g({Y}_{1})&h({Y}_{2})] = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}{g({y}_{1})h({y}_{2})f({y}_{1},{y}_{2})d{y}_{2}d{y}_{1}} \\
+    &= \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}{g({y}_{1})h({y}_{2}){f}_{1}({y}_{1}){f}_{2}({y}_{2})d{y}_{2}d{y}_{1}} \\
+    &= \int_{-\infty}^{\infty}{g({y}_{1}){f}_{1}({y}_{1})\left[\int_{-\infty}^{\infty}h({y}_{2}){f}_{2}({y}_{2})d{y}_{2}\right]d{y}_{1}} \\
+    &= \int_{-\infty}^{\infty}{g({y}_{1}){f}_{1}({y}_{1})E[h({Y}_{2})]d{y}_{1}} \\
+    &= E[h({Y}_{2})]\int_{-\infty}^{\infty}{g({y}_{1}){f}_{1}({y}_{1})d{y}_{1}} \\
+    &= E[g({Y}_{1})]E[h({Y}_{2})]
+\end{align*}
+
+La demostración para el caso discreto sigue un modo análogo. 
+\end{tcolorbox}
+
+\section{\textbf{5.7} Covarianza de dos variables aleatorias}
+
+Intuitivamente consideramos la dependencia de dos variables aleatorias ${Y}_{1}$ y ${Y}_{2}$ como un procesos en el que una de las variables, por ejemplo ${Y}_{1}$, aumenta o disminuye cuando ${Y}_{2}$ cambia. Concentraremos nuestra atención en dos medidas de dependencia: la covarianza entre dos variables aleatorias y su coeficiente de correlación. 
+
+\begin{tcolorbox}[title = Definición 5.10]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias con medias ${\mu}_{1}$ y ${\mu}_{2}$, respectivamente, la \emph{covarianza} de ${Y}_{1}$ y ${Y}_{2}$ es 
+
+\begin{align*}
+    Cov({Y}_{1},{Y}_{2}) = E[({Y}_{1} - {\mu}_{1})({Y}_{2} -{\mu}_{2})]
+\end{align*}
+\end{tcolorbox}
+
+Cuanto mayor sea el valor absoluto de la covarianza de ${Y}_{1}$ y ${Y}_{2}$, mayor será la dependencia lineal entre ${Y}_{1}$ y ${Y}_{2}$. Los valores positivos indican que ${Y}_{1}$ aumenta cuando ${Y}_{2}$ aumenta; los valores negativos indican que ${Y}_{1}$ disminuye cuando ${Y}_{2}$ aumenta. Un valor de cero indica que no hay dependencia lineal entre ${Y}_{1}$ y ${Y}_{2}$. 
+
+Desafortunadamente, es difícil utilizar la covarianza como medida absoluta de dependencia por que su valor depende de la escala de medición. Este problema se puede solucionar al estandarizar su valor y ocupar el \emph{coeficiente de correlación}, $\rho$, definida como 
+
+\begin{align*}
+    \rho = \frac{Cov({Y}_{1},{Y}_{2})}{{\sigma}_{1}{\sigma}_{2}}
+\end{align*}
+
+donde ${\sigma}_{1}$ y ${\sigma}_{2}$ son desviaciones estándar de ${Y}_{1}$ y ${Y}_{2}$, respectivamente. Además el coeficiente de correlación $\rho$ satisface la desigualdad $-1 \leq \rho \leq 1$. Entonces, $\rho > 0$ indica que ${Y}_{1}$ aumenta a mediad que ${Y}_{2}$ aumenta y $\rho = +1$ implica correlación perfecta, con todos los puntos cayendo en una recta con pendiente positiva. Un valor de $\rho = 0$ implica cero covarianza y que no hay correlación. Un coeficiente $\rho < 0$ implica una disminución en ${Y}_{2}$ cuando ${Y}_{1}$ aumenta, y $\rho = -1$ implica correlación perfecta cayendo sobre una recta con pendiente negativa. 
+
+\begin{tcolorbox}[title = Teorema 5.10]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias con medias ${\mu}_{1}$ y ${\mu}_{2}$, respectivamente, entonces 
+
+\begin{align*}
+    Cov({Y}_{1},{Y}_{2}) &= E[({Y}_{1} - {\mu}_{1})({Y}_{2}-{\mu}_{2})] \\
+    &= E({Y}_{1}{Y}_{2}) - E({Y}_{1})E({Y}_{2})
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+\begin{align*}
+    Cov({Y}_{1},{Y}_{2}) &= E[({Y}_{1} - {\mu}_{1})({Y}_{2} - {\mu}_{2})] \\
+    &= E({Y}_{1}{Y}_{2} - {\mu}_{1}{Y}_{2} - {\mu}_{2}{Y}_{1} + {\mu}_{1}{\mu}_{2})
+\end{align*}
+
+Del Teorema 5.8, el valor esperado de una suma es igual a la suma de los valores esperados; y del Teorema 5.7, el valor esperado de una constante multiplicado por una función de variables aleatorias es la constante por el valor esperado. Entonces, 
+
+\begin{align*}
+    Cov({Y}_{1},{Y}_{2}) = E({Y}_{1}{Y}_{2}) - {\mu}_{1}E({Y}_{2}) - {\mu}_{2}E({Y}_{1}) + {\mu}_{1}{\mu}_{2}
+\end{align*}
+
+Como $E({Y}_{1})= {\mu}_{1}$ y $E({Y}_{2}) = {\mu}_{2}$, se deduce que 
+
+\begin{align*}
+    Cov({Y}_{1},{Y}_{2}) &= E({Y}_{1}{Y}_{2}) - E({Y}_{1})E({Y}_{2}) \\
+    = E({Y}_{1}{Y}_{2}) - {\mu}_{1}{\mu}_{2}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 5.11]
+Si ${Y}_{1}$ y ${Y}_{2}$ son variables aleatorias independientes, entonces 
+
+\begin{align*}
+    Cov({Y}_{1},{Y}_{2}) = 0
+\end{align*}
+
+Así, las variables aleatorias independientes deben ser no correlacionadas. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+El Teorema 5.10 establece que 
+
+\begin{align*}
+    Cov({Y}_{1},{Y}_{2}) = E({Y}_{1}{Y}_{2}) - {\mu}_{1}{\mu}_{2}
+\end{align*}
+
+Como ${Y}_{1}$ y ${Y}_{2}$ son independientes, el Teorema 5.9 implica que 
+
+\begin{align*}
+    E({Y}_{1}{Y}_{2}) = E({Y}_{1})E({Y}_{2}) = {\mu}_{1}{\mu}_{2}
+\end{align*}
+
+y el resultado deseado se deduce de inmediato. 
+\end{tcolorbox}
+
+\section{\textbf{5.8} Valor esperado y varianza de funciones lineales de variables aleatorias}
+
+Si ${a}_{1},{a}_{2},\dots,{a}_{n}$ son constantes, será necesario calcular el valor esperado y varianza de una función lineal de las variables aleatorias ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$. Esta se puede definir de la siguiente manera
+
+\begin{align*}
+    {U}_{1} = {a}_{1}{Y}_{1} + {a}_{2}{Y}_{2} + {a}_{3}{Y}_{3} + \cdots + {a}_{n}{Y}_{n} = \sum_{i=1}^{n}{{a}_{i}{Y}_{i}}
+\end{align*}
+
+\begin{tcolorbox}[title = Teorema 5.12]
+Sean ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ y ${X}_{1},{X}_{2},\ldots,{X}_{m}$ variables aleatorias con $E({Y}_{i})= {\mu}_{i}$ y $E({X}_{i}) = {\xi}_{i}$. Defina
+
+\begin{align*}
+    {U}_{1} &= \sum_{i=1}^{n}{{a}_{i}{Y}_{i}} & {U}_{2} &= \sum_{j=1}^{m}{{b}_{j}{X}_{j}}
+\end{align*}
+
+para las constantes ${a}_{1},{a}_{2},\ldots,{a}_{n}$ y ${b}_{1},{b}_{2},\ldots,{b}_{m}$. Entonces se cumple lo siguiente: 
+
+\begin{enumerate}
+
+    \item[\textbf{a}] $E({U}_{1}) = \displaystyle \sum_{i=1}^{n}{{a}_{i}{\mu}_{i}}$. 
+
+    \item[\textbf{b}] \begin{align*}
+    V({U}_{1}) = \displaystyle \sum_{i=1}^{n}{{a}_{i}^{2}V({Y}_{i})} +2 \mathop{\sum\sum}\limits_{1 \leq i < j \leq n}{{a}_{i}{a}_{j}Cov({Y}_{i},{Y}_{j})}
+    \end{align*}
+    donde la doble suma es para todos los pares $(i,j)$ con $i < j$. 
+
+    \item[\textbf{c}] $Cov({U}_{1},{U}_{2}) = \displaystyle \sum_{i=1}^{n}\sum_{j=1}^{m}{{a}_{i}{b}_{j}Cov({Y}_{i},{Y}_{j})}$
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+El teorema consta de tres partes, de las cuales (a) viene directamente de los Teoremas 5.7 y 5.8. Para demostrar (b) recurrimos a la definición de varianza y escribimos 
+
+\begin{align*}
+    &V({U}_{1}) = E{[{U}_{1} - E({U}_{1})]}^{2} = E{\left[\sum_{i=1}^{n}{{a}_{i}{Y}_{i}} - \sum_{i=1}^{n}{{a}_{i}{\mu}_{i}}\right]}^{2} \\
+    &= E{\left[\sum_{i=1}^{n}{{a}_{i}({Y}_{i} - {\mu}_{i})}\right]}^{2}\\
+    &= E\left[\sum_{i=1}^{n}{{a}_{i}^{2}{({Y}_{i} - {\mu}_{i})}^{2}} + \mathop{\sum_{i=1}^{n}\sum_{i=1}^{n}}\limits_{i\neq j}{{a}_{i}{a}_{j}({Y}_{i} - {\mu}_{i})({Y}_{j} - {\mu}_{j})}\right] \\
+    &= \sum_{i=1}^{n}{{a}_{i}^{2}E{({Y}_{i} - {\mu}_{i})}^{2}} + \mathop{\sum_{i=1}^{n}\sum_{i=1}^{n}}\limits_{i\neq j}{{a}_{i}{a}_{j}E\left[({Y}_{i} - {\mu}_{i})({Y}_{j} - {\mu}_{j})\right]}
+\end{align*}
+
+Por las definiciones de varianza y covarianza tenemos 
+
+\begin{align*}
+    V({U}_{1}) = \sum_{i=1}^{n}{{a}_{i}^{2}V({Y}_{i})} + \mathop{\sum_{i=1}^{n}\sum_{i=1}^{n}}\limits_{i\neq j}{{a}_{i}{a}_{j}Cov({Y}_{i},{Y}_{j})}
+\end{align*}
+
+
+Como $Cov({Y}_{i},{Y}_{j})= Cov({Y}_{j},{Y}_{i})$, podemos escribir
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+
+\begin{align*}
+    V({U}_{1}) = \displaystyle \sum_{i=1}^{n}{{a}_{i}^{2}V({Y}_{i})} +2 \mathop{\sum\sum}\limits_{1 \leq i < j \leq n}{{a}_{i}{a}_{j}Cov({Y}_{i},{Y}_{j})}
+\end{align*}
+
+Se pueden usar pasos similares para obtener (c). Tenemos 
+
+\begin{align*}
+    &Cov({U}_{1},{U}_{2}) = E\left\{\left[{U}_{1} - E({U}_{1})\right]\left[{U}_{2} - E({U}_{2})\right]\right\}\\
+    &= E\left[\left(\sum_{i=1}^{n}{{a}_{i}{Y}_{i}} - \sum_{i=1}^{n}{{a}_{i}{\mu}_{i}}\right)\left(\sum_{j=1}^{m}{{b}_{j}{X}_{j}} - \sum_{j=1}^{m}{{b}_{j}{\xi}_{j}}\right)\right] \\
+    &= E\left\{\left[\sum_{i=1}^{n}{{a}_{i}({Y}_{i} - {\mu}_{i})}\right]\left[\sum_{j=1}^{m}{{b}_{j}({X}_{j} - {\xi}_{j})}\right]\right\}\\
+    &=E\left[\sum_{i=1}^{n}\sum_{j=1}^{m}{{a}_{i}{b}_{j}({Y}_{i} - {\mu}_{i})({X}_{j} - {\xi}_{j})}\right] \\
+    &= \sum_{i=1}^{n}\sum_{j=1}^{m}{{a}_{i}{b}_{j}E[({Y}_{i} - {\mu}_{i})({X}_{j} - {\xi}_{j})]}\\
+    &= \sum_{i=1}^{n}\sum_{j=1}^{m}{{a}_{i}{b}_{j}Cov({Y}_{i},{X}_{j})}
+\end{align*}
+
+Al observar que $Cov({Y}_{i},{Y}_{i}) = V({Y}_{i})$, podemos ver que (b) es un caso especial de (c). 
+\end{tcolorbox}
+
+\section{\textbf{5.9} Distribución de probabilidad multinomial}
+
+Recuerde del Capítulo 3 que una variable aleatoria binomial resulta de un experimento que consiste en $n$ intentos con dos posibles resultados por intento. Un experimento multinomial es una generalización del experimento binomial. 
+
+\begin{tcolorbox}[title = Definición 5.11]
+Un \emph{experimento multinomial} posee las siguiente propiedades:
+\begin{enumerate}
+    
+    \item[1.] El experimento consta de $n$ intento idénticos. 
+
+    \item[2.] El resultado de cada intento cae en una de $k$ clases o celdas. 
+
+    \item[3.] La probabilidad de que el resultado de un solo intento caiga en la celda $i$ es ${p}_{i}$. $i=1,2,\ldots,k$ y sigue siendo el mismo de un intento a otro. Observe que ${p}_{1} + {p}_{2} + {p}_{3} + \cdots +{p}_{k}=1$. 
+
+    \item[4.] Los intento son independientes. 
+
+    \item[5.] Las variables aleatorias de interés son ${Y}_{1},{Y}_{2},\ldots,{Y}_{k}$, donde ${Y}_{i}$ es igual al número de intento para los cuales el resultado cae en la celda $i$. Observe que ${Y}_{1}+{Y}_{2}+{Y}_{3}+\cdots +{Y}_{k}=n$
+    
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Definición 5.12]
+Suponga que ${p}_{1},{p}_{2},\ldots,{p}_{k}$ son tales que $\displaystyle \sum_{i=1}^{k}{{p}_{i}}=1$, y ${p}_{i}>0$ para $i=1,2,\ldots,k$. Se dice que las variables aleatorias ${Y}_{1},{Y}_{2},\ldots,{Y}_{k}$ tienen una \emph{distribución multinomial} para parámetro $n$ y ${p}_{1},{p}_{2},\ldots,{p}_{k}$ si la función de probabilidad conjunta de ${Y}_{1},{Y}_{2},\dots,{Y}_{k}$ está dada por 
+
+\begin{align*}
+    p({y}_{1},{y}_{2},\ldots,{y}_{k})= \frac{n!}{{y}_{1}!{y}_{2}!\cdots{y}_{k}!}{p}_{1}^{{y}_{1}}{p}_{2}^{{y}_{2}}\cdots {p}_{k}^{{y}_{k}}
+\end{align*}
+
+donde, para cada $i=0,1,2,\ldots,n$ y $\displaystyle \sum_{i=1}^{k}{{y}_{i}}=n$. 
+\end{tcolorbox}
+
+Muchos experimentos en los que aparece una clasificación son multinomiales. Observe que el experimento binomial es un caso especial del experimento multinomial (cuando hay $k=2$ clases).
+
+\begin{tcolorbox}[title = Teorema 5.13]
+Si ${Y}_{1},{Y}_{2},\ldots,{Y}_{k}$ tienen una distribución binomial con parámetros $n$ y ${p}_{1},{p}_{2},\ldots,{p}_{k}$, entonces 
+
+\begin{enumerate}
+    
+    \item[1.] $E({Y}_{i}) = n{p}_{i}$, $V({Y}_{i} = n{p}_{i}{q}_{i}$. 
+
+    \item[2.] $Cov({Y}_{s},{Y}_{t}) = -n{p}_{s}{p}_{t}$, si $s\neq t$. 
+    
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La distribución marginal de ${Y}_{i}$ se puede usar para obtener la media y varianza. Recuerde que ${Y}_{i}$ puede ser interpretada como el número de intento que caen en la celda $i$. Imagine todas las celdas, excluyendo la $i$, combinadas en una sola celda grande. Entonces cada intento resultará en la celda $i$ o en una celda que no sea la $i$, con probabilidades ${p}_{i}$ y $1 - {p}_{i}$, respectivamente. Entonces ${Y}_{i}$ posee una distribución de probabilidad marginal binomial. EN consecuencia, 
+
+\begin{align*}
+    E({Y}_{i}) &= n{p}_{i} & V({Y}_{i}) &= n{p}_{i}{q}_{i}   
+\end{align*}
+
+donde ${q}_{i}=1 - {p}_{i}$. Los mismos resultados se pueden obtener al establecer los valores esperados y evaluar. Por ejemplo, 
+
+\begin{align*}
+    E({Y}_{1}) = \sum_{{y}_{1}}\sum_{{y}_{2}}\cdots \sum_{{y}_{k}}{{y}_{1}\frac{n!}{{y}_{1}!{y}_{2}!\cdots{y}_{k}!}{p}_{1}^{{y}_{1}}{p}_{2}^{{y}_{2}}\cdots {p}_{k}^{{y}_{k}}}
+\end{align*}
+
+Como ya hemos deducido el valor esperado y la varianza de ${Y}_{i}$, dejamos la sumatoria de este valor esperado para el lector interesado. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La demostración de la parte 2 usa el Teorema 5.12. Considere el experimento multinomial como una sucesión de $n$ intento independientes y defina, para $s\neq t$, 
+
+\begin{align*}
+    {U}_{i} = \begin{cases}
+        1, & \text{si el intento $i$ resulta en clase $s$}, \\
+        0, & \text{de otro modo}
+    \end{cases}
+\end{align*}
+
+y
+
+\begin{align*}
+    {W}_{i} = \begin{cases}
+        1, & \text{si el intento $i$ resulta en clase $t$}, \\
+        0, & \text{de otro modo}
+    \end{cases}
+\end{align*}
+
+Entonces 
+
+\begin{align*}
+    {Y}_{s} &= \sum_{i=1}^{n}{{U}_{i}} & {Y}_{t} = \sum_{j=1}^{n}{{W}_{j}} 
+\end{align*}
+
+(Como ${U}_{i}=1$ o 0 dependiendo de si el $i$-ésimo intento resultó en clase $s$, ${Y}_{s}$ es simplemente la suma de una serie de número 0 y 1. Ocurre un 1 en la suma cada vez que observamos un artículo de la clase $s$ y 0 cada vez que observamos cualquier otra clase. Entonces, ${Y}_{s}$ es simplemente el número de veces que se observe la clase $s$. Una interpretación similar se aplica a ${Y}_{t}$.)
+
+Observe que ${U}_{i}$ y ${W}_{i}$ no pueden ser iguales a 1 (el $i$-ésimo artículo no puede estar simultáneamente en las clases $s$ y $t$). Entonces el producto ${U}_{i}{W}_{i}$ siempre es igual a cero y $E({U}_{i}{W}_{i})=0$. Los siguientes resultados nos permiten evaluar $Cov({Y}_{s},{Y}_{t})$:
+
+\begin{align*}
+    E({U}_{i}) &= {p}_{s} \\
+    E({W}_{j}) &= {p}_{t} \\
+    Cov({U}_{i},{W}_{j}) &= 0 \\
+    &\text{si $i \neq j$ porque los intentos son independientes} \\
+    Cov({U}_{i},{W}_{i}) &= E({U}_{i}{W}_{i}) - E({U}_{i})E({W}_{i}) = 0 -{p}_{s}{p}_{t}
+\end{align*}
+
+Del Teorema 5.12 tenemos entonces 
+
+\begin{align*}
+    Cov({Y}_{s},{Y}_{t}) &= \sum_{i=1}^{n}\sum_{j=1}^{n}{Cov({U}_{i},{W}_{j})} \\
+    &= \sum_{i=1}^{n}{Cov({U}_{i},{W}_{i})} + \mathop{\sum\sum}\limits_{i \neq j}{Cov({U}_{i},{W}_{j})}\\
+    &= \sum_{i=1}^{n}{(-{p}_{s}{p}_{t})} + \mathop{\sum\sum}\limits_{i \neq j}{0} \\
+    &=-n{p}_{s}{p}_{t} \\
+\end{align*}
+
+La covarianza es negativa, lo que ya se esperaba, porque un gran número de resultados en la celda $s$ forzaría al número de la celda $t$ a ser pequeño. 
+\end{tcolorbox}
+
+\section{\textbf{5.10} Distribución normal bivariante (opcional)}
+
+La distribución normal multivariante es muy importante en la teoría moderna de estadística. En general, la función de densidad normal multivariante se define para $k$ variabeles aleatorias continuas, ${Y}_{1},{Y}_{2},\ldots,{Y}_{k}$. Debido a su complejidad, presentaremos sólo la función de densidad bivariante $(k=2)$:
+
+\begin{align*}
+    f({y}_{1},{y}_{2}) &= \frac{{e}^{-Q/2}}{2\pi {\sigma}_{1}{\sigma}_{2}\sqrt{1-{\rho}^{2}}} & -\infty &<{y}_{1}<\infty, -\infty <{y}_{2} <\infty
+\end{align*}
+
+donde
+
+\begin{align*}
+    Q = \frac{1}{1 - {\rho}^{2}}\left[\frac{{({y}_{1} - {\mu}_{1})}^{2}}{{\sigma}_{1}^{2}} - 2 \rho \frac{({y}_{1} -{\mu}_{1})({y}_{2} - {\mu}_{2})}{{\sigma}_{1}{\sigma}_{2}} + \frac{{({y}_{2} - {\mu}_{2})}^{2}}{{\sigma}_{2}^{2}}\right]
+\end{align*}
+
+La función de densidad normal bivariante es una función de cinco parámetros: ${\mu}_{1},{\mu}_{2},{\sigma}_{1}^{2},{\sigma}_{2}^{2}$ y $\rho$. 
+
+\section{\textbf{5.11} Valores esperados condicionales}
+
+
+\begin{tcolorbox}[title = Definición 5.13]
+Si ${Y}_{1}$ y ${Y}_{2}$ son dos variables aleatorias cualesquiera, el \emph{valor esperado condicional} de $g({Y}_{1})$, dado que ${Y}_{2}={y}_{2}$, se define que es 
+
+\begin{align*}
+    E(g({Y}_{1})|{Y}_{2}={y}_{2}) = \int_{-\infty}^{\infty}{g({y}_{1})f({y}_{1}|{y}_{2})d{y}_{1}}
+\end{align*}
+
+si ${Y}_{1}$ y ${Y}_{2}$ son continuas conjuntamente y 
+
+\begin{align*}
+    E(g({Y}_{1})|{Y}_{2}={y}_{2}) = \sum_{\text{toda ${y}_{1}$}}{g({y}_{1})p({y}_{1}|{y}_{2})}
+\end{align*}
+
+si ${Y}_{1}$ y ${Y}_{2}$ son discretas conjuntamente. 
+\end{tcolorbox}
+
+En genera, el valor esperado condicional de ${Y}_{1}$ dada ${Y}_{2}= {y}_{2}$ es una función de ${y}_{2}$. Si ahora hacemos variar ${Y}_{2}$ en todos sus posibles valores, podemos considerar el valor esperado condicional $E({Y}_{1}|{Y}_{2})$ como una función de la variable aleatoria ${Y}_{2}$. Como $E({Y}_{1}|{Y}_{2})$ es una función de la variable aleatoria ${Y}_{2}$, también es una variable aleatorias; y como tal, tiene media y varianza. 
+
+\begin{tcolorbox}[title = Teorema 5.14]
+Si ${Y}_{1}$ y ${Y}_{2}$ son dos variables aleatorias, entonces 
+
+\begin{align*}
+    E({Y}_{1}) = E[E({Y}_{1}|{Y}_{2})]
+\end{align*}
+
+donde en el lado derecho de la ecuación el valor esperado interior es con respecto a la distribución condicional de ${Y}_{1}$ dada ${Y}_{2}$ y el valor esperado exterior es con respecto a la distribución de ${Y}_{2}$. 
+\end{tcolorbox} 
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Suponga que ${Y}_{1}$ y ${Y}_{2}$ son continuas conjuntamente con función de densidad conjunta $f({y}_{1},{y}_{2})$ y densidades marginales ${f}_{1}({y}_{1})$ y ${f}_{2}({y}_{2})$, respectivamente. Entonces 
+
+\begin{align*}
+    E({Y}_{1}) &= \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}{{y}_{1}f({y}_{1},{y}_{2})d{y}_{1}d{y}_{2}} \\
+    &= \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}{{y}_{1}f({y}_{1}|{y}_{2}){f}_{2}({y}_{2})d{y}_{1}d{y}_{2}} \\
+    &= \int_{-\infty}^{\infty}{\left[\int_{-\infty}^{\infty}{{y}_{1}f({y}_{1}|{y}_{2})d{y}_{1}}\right]{f}_{2}({y}_{2})d{y}_{2}}\\
+    &= \int_{-\infty}^{\infty}{E({Y}_{1}|{Y}_{2}={y}_{2}){f}_{2}({y}_{2})d{y}_{2}}\\
+    &= E[E({Y}_{1}|{Y}_{2})]
+\end{align*}
+
+La demostración es semejante para el caso discreto. 
+\end{tcolorbox}
+
+La varianza condicional de ${Y}_{1}$ dada ${Y}_{2}={y}_{2}$ está definida por analogía con una varianza ordinaria, de nuevo utilizando la densidad condicional o función de probabilidad de ${Y}_{1}$ dada ${Y}_{2}={y}_{2}$ en lugar de la densidad ordinaria o función de probabilidad ${Y}_{1}$. Esto es, 
+
+\begin{align*}
+    V({Y}_{1}|{Y}_{2} = {y}_{2}) = E({Y}_{1}^{2}|{Y}_{2}={y}_{2}) - {[E({Y}_{1}|{Y}_{2}={y}_{2})]}^{2}
+\end{align*}
+
+Como en el caso de la media condicional, la varianza condicional es una función de ${y}_{2}$. Si dejamos que ${Y}_{2}$ tome todos sus valores posibles, podemos definir $V({Y}_{1}|{Y}_{2})$ como una variable aleatoria que es una función de ${Y}_{2}$. Específicamente, si $g({y}_{2})=V({Y}_{1}|{Y}_{2} = {y}_{2})$ es una función particular del valor observado ${y}_{2}$, entonces $g({Y}_{2})=V({Y}_{1}|{Y}_{2})$ es la \emph{misma función} de la variable aleatorias, ${Y}_{2}$. 
+
+\begin{tcolorbox}[title = Teorema 5.15]
+Si ${Y}_{1}$ y ${Y}_{2}$ representan variables aleatorias, entonces 
+
+\begin{align*}
+    V({Y}_{1}) = E[V({Y}_{1}|{Y}_{2})] + V[E({Y}_{1}|{Y}_{2})]
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Como se indicó antes, $V\left({Y}_{1}|{Y}_{2}\right)$ está dada por 
+
+\begin{align*}
+    V({Y}_{1}|{Y}_{2}) = E({Y}_{1}^{2}|{Y}_{2}) - {[E({Y}_{1}|{Y}_{2})]}^{2}
+\end{align*}
+
+y 
+
+\begin{align*}
+    E[V({Y}_{1}|{Y}_{2})] = E[E({Y}_{1}^{2}|{Y}_{2})] - E\left\{{[E({Y}_{1}|{Y}_{2})]}^{2}\right\}
+\end{align*}
+
+Por definición, 
+
+\begin{align*}
+    V[E({Y}_{1}|{Y}_{2})] = E\left\{{[E({Y}_{1}|{Y}_{2})]}^{2}\right\} - \left\{E[E({Y}_{1}|{Y}_{2})]\right\}^{2}
+\end{align*}
+
+La varianza de ${Y}_{1}$ es 
+
+\begin{align*}
+    V({Y}_{1})&= E[{Y}_{1}^{2}] - {[E({Y}_{1})]}^{2} \\
+    &=E\{E[{Y}_{1}^{2}|{Y}_{2}]\} - \{E[E({Y}_{1}|{Y}_{2})]\}^{2}\\
+    &= E\{E[{Y}_{1}^{2}|{Y}_{2}]\} - E\{{[E({Y}_{1}|{Y}_{2}]}^{2}\} + E\{{[E({Y}_{1}|{Y}_{2}]}^{2}\} \\
+    &- \{E[E({Y}_{1}|{Y}_{2})]\}^{2}\\
+    &= E[V({Y}_{1}|{Y}_{2})] + V[E({Y}_{1}|{Y}_{2})]
+\end{align*}
+\end{tcolorbox}
+
+
+
+%Great symbol look-up site: \href{http://detexify.kirelabs.org/}{Detexify}\\
+%\href{http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf}{\LaTeX\ Mathematical Symbols}\\
+%\href{ftp://tug.ctan.org/pub/tex-archive/info/symbols/comprehensive/symbols-letter.pdf}{The Comprehensive \LaTeX\ Symbol List}\\ 
+%\href{http://mirrors.med.harvard.edu/ctan/info/lshort/english/lshort.pdf}{The Not So Short Introduction to \LaTeX\ 2$\varepsilon$}\\
+
+\end{multicols}
+
+%\SetWatermarkHorCenter{0.65\paperwidth}
+\end{document}
