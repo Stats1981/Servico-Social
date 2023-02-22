@@ -1,0 +1,478 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overleaf Example: A quick guide to LaTeX
+%
+% Original Source: Dave Richeson (divisbyzero.com), Dickinson College
+% Modified By: Paul Gessler, Overleaf (overleaf.com)
+% 
+% A one-size-fits-all LaTeX cheat sheet. Kept to two pages, so it 
+% can be printed (double-sided) on one piece of paper
+% 
+% Feel free to distribute this example, but please keep the referral
+% to divisbyzero.com
+% 
+% Guidance on the use of the Overleaf logos can be found here:
+% https://www.overleaf.com/for/partners/logos 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use Overleaf: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[10pt,landscape,letterpaper]{article}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{spverbatim}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,urlcolor=olgreen]{hyperref}
+\usepackage{booktabs}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
+\setsansfont{Fira Sans}
+\usepackage{tcolorbox} 
+\setmonofont{Inconsolata}
+%\usepackage{unicode-math}
+%\setmathfont{TeX Gyre Pagella Math}
+\usepackage{microtype}
+% dirty fix for microtype
+\makeatletter
+\def\MT@is@composite#1#2\relax{%
+  \ifx\\#2\\\else
+    \expandafter\def\expandafter\MT@char\expandafter{\csname\expandafter
+                    \string\csname\MT@encoding\endcsname
+                    \MT@detokenize@n{#1}-\MT@detokenize@n{#2}\endcsname}%
+    % 3 lines added:
+    \ifx\UnicodeEncodingName\@undefined\else
+      \expandafter\expandafter\expandafter\MT@is@uni@comp\MT@char\iffontchar\else\fi\relax
+    \fi
+    \expandafter\expandafter\expandafter\MT@is@letter\MT@char\relax\relax
+    \ifnum\MT@char@ < \z@
+      \ifMT@xunicode
+        \edef\MT@char{\MT@exp@two@c\MT@strip@prefix\meaning\MT@char>\relax}%
+          \expandafter\MT@exp@two@c\expandafter\MT@is@charx\expandafter
+            \MT@char\MT@charxstring\relax\relax\relax\relax\relax
+      \fi
+    \fi
+  \fi
+}
+% new:
+\def\MT@is@uni@comp#1\iffontchar#2\else#3\fi\relax{%
+  \ifx\\#2\\\else\edef\MT@char{\iffontchar#2\fi}\fi
+}
+\makeatother
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{margin=0.4in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\sffamily\large}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\sffamily\normalsize\itshape}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\itshape}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+% -----------------------------------------------------------------------
+
+\usepackage{academicons}
+
+%\usepackage{draftwatermark,afterpage,xcolor}
+%\definecolor{olgreen}{HTML}{4f9c45}
+%\SetWatermarkText{\aiOverleaf}
+%\SetWatermarkFontSize{0.9\paperheight}
+%\SetWatermarkAngle{0}
+%\SetWatermarkColor[HTML]{EDF5EC}
+%\SetWatermarkLightness{0.95}
+%\SetWatermarkHorCenter{0.35\paperwidth}
+
+\begin{document}
+\footnotesize
+%\raggedright
+
+\begin{center}
+  {\huge\sffamily\bfseries Capítulo 7 Distribuciones muestrales y el teorema del límite central}  \\
+\end{center}
+\setlength{\premulticols}{0pt}
+\setlength{\postmulticols}{0pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{1.8em}
+\begin{multicols}{3}
+
+\section{\textbf{7.1} Introducción}
+
+A lo largo de este capítulo trabajaremos con funciones de las variables ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$, observadas en una muestra aleatoria seleccionada de una población de interés. Estas variables son independientes y tienen la misma distribución. Se pueden utilizar funciones de las variables aleatorias observadas en una muestra para calcular o tomar decisiones acerca de parámetros desconocidos de la población. Como se vio en el capítulo anterior, si se crea una función de variables aleatorias entonces esta función es una variable aleatoria. Con esto se puede llegar a la siguiente definición. 
+
+\begin{tcolorbox}[title = Definición 7.1]
+Un \emph{estadístico} es una función de las variables aleatorias observadas en una muestra y constantes conocidas. 
+\end{tcolorbox}
+
+Algunos ejemplos de estadísticos son: la media muestral $\bar{Y}$, la varianza muestral ${S}^{2}$ o la amplitud $R = {Y}_{(n)} - {Y}_{(1)}$. Se utilizan estadísticos para hacer inferencias acerca de parámetros de una población. Además como son funciones de variables aleatorias entonces los estadísticos también son variables aleatorias. En consecuencia, todos los estadísticos tienen distribuciones de probabilidad que llamaremos \emph{distribuciones muestrales}. Esta distribución dependerá de la distribución de las variables aleatorias observables de la muestra. 
+
+\section{\textbf{7.2} Distribuciones muestrales relacionadas con la distribución normal}
+
+Se ha visto anteriormente que muchos fenómenos observados en el mundo real tienen distribuciones de frecuencia relativas que se pueden modelar usando la distribución de probabilidad normal. Entonces supongamos que las variables aleatorias observables en una muestra aleatorias son ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ y que sean independientes con función de densidad normal. Entonces se puede encontrar un estadístico que ayude a hacer inferencias acerca de la población. Esto se observa en el siguiente teorema. 
+
+\begin{tcolorbox}[title = Teorema 7.1]
+Sea ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ una muestra aleatorias de tamaño $n$ de una distribución normal con media $\mu$ y varianza ${\sigma}^{2}$. Entonces 
+
+\begin{align*}
+\overline{Y} = \frac{1}{n}\sum_{i=1}^{n}{{Y}_{i}}
+\end{align*}
+
+está distribuida normalmente con media $\displaystyle {\mu}_{\overline{Y}} = \mu$ y varianza $\displaystyle {\sigma}_{\overline{Y}}^{2} = {\sigma}^{2}/n$.
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Como ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ es una muestra aleatoria de una distribución normal con media $\mu$ y varianza ${\sigma}^{2}$, ${Y}_{i}$, $i = 1,2,\ldots, n$ son variables aleatorias indepnedientes distribuidas normalmente, con $E({Y}_{i}) = \mu$ y $V({Y}_{i}) = {\sigma}^{2}$. Además, 
+
+\begin{align*}
+\overline{Y} &= \frac{1}{n} \sum_{i=1}^{n}{{Y}_{i}} = \frac{1}{n}({Y}_{1}) + \frac{1}{n}({Y}_{2}) + \cdots + \frac{1}{n}({Y}_{n}) \\
+&= {a}_{1}{Y}_{1} + {a}_{2}{Y}_{2} + \cdots +{a}_{n}{Y}_{n}
+\end{align*}
+
+donde ${a}_{i} = 1/n$, $i = 1,2,\ldots, n$. Así, $\overline{Y}$ es una combinación lineal de ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$, y se puede aplicar el Teorema 6.3 para concluir que $\overline{Y}$ está distribuida normalemente con 
+
+\begin{align*}
+E(\overline{Y}) &= E\left[\frac{1}{n}({Y}_{1}) + \cdots + \frac{1}{n}({Y}_{n})\right] \\
+&= \frac{1}{n}\mu + \cdots + \frac{1}{n}\mu \\
+& = \mu
+\end{align*}
+
+y 
+
+\begin{align*}
+V(\overline{Y}) &= V\left[\frac{1}{n}({Y}_{1}) + \cdots + \frac{1}{n}({Y}_{n})\right]\\
+&= \frac{1}{{n}^{2}}({\sigma}^{2}) + \cdots + \frac{1}{{n}^{2}}({\sigma}^{2}) \\
+&= \frac{1}{{n}^{2}}(n{\sigma}^{2}) = \frac{{\sigma}^{2}}{n}
+\end{align*}
+
+Esto es, la distribución muestral de $\overline{Y}$ es normal con media $\displaystyle {\mu}_{\overline{Y}} = \mu$ y varianza $\displaystyle {\sigma}_{\overline{Y}}^{2} = {\sigma}^{2}/n$.
+\end{tcolorbox}
+
+De acuerdo con estas condiciones si $\overline{Y}$ está normalmente distribuida con media $\displaystyle {\mu}_{\overline{Y}} = \mu$ y varianza $\displaystyle {\sigma}_{\overline{Y}}^{2} = {\sigma}^{2}/n$. Se deduce que, 
+
+\begin{align*}
+Z = \frac{\overline{Y} - \displaystyle {\mu}_{\overline{Y}}}{\displaystyle {\sigma}_{\overline{Y}}} = \frac{\overline{Y} - \mu}{{\sigma}/\sqrt{n}} = \sqrt{n} \left(\frac{\overline{Y} - \mu}{\sigma}\right)
+\end{align*}
+
+tiene una distribución normal estándar. Con esto se puede llegar al siguiente teorema. 
+
+\begin{tcolorbox}[title = Toerema 7.2]
+Si ${Y}_{1}, {Y}_{2},\ldots, {Y}_{n}$ está definida como en el Teorema 7.1. Entonces ${Z}_{i} = ({Y}_{i} - \mu) /\sigma$ son variables aleatorias independientes con distribución normales estándar, $i = 1, 2, \ldots, n$, y 
+
+\begin{align*}
+    \sum_{i=1}^{n}{{Z}_{i}^{2}} = \sum_{i=1}^{n}{{\left(\frac{{Y}_{i} - \mu}{\sigma}\right)}^{2}}
+\end{align*}
+
+tienen una distribución ${\chi}^{2}$ con $n$ grados de libertad (gl).
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Como ${Y}_{1}, {Y}_{2},\ldots, {Y}_{n}$ es una muestra aleatoria de una distribución normal con media $\mu$ y varianza ${\sigma}^{2}$. Como ya se ha visto anteriormente ${Z}_{i} = ({Y}_{i} - \mu)/\sigma$ tiene una distribución normal estándar para $i=1,2,\ldots, n$. Además las variables aleatorias ${Z}_{i}$ son independientes porque las variables aleatorias ${Y}_{i}$ son independiente, $i = 1,2,\ldots,n$ El hecho de que $\displaystyle \sum_{i=1}^{n}{{Z}_{i}^{2}}$ tiene una distribución ${\chi}^{2}$ con $n$ grados de libertad se deduce directamente del Teorema 6.4
+\end{tcolorbox}
+
+La distribución ${\chi}^{2}$ es bastante importante en la estadística por la relación que tiene con la distribución normal. Debido a su importancia se tienen tablas de valores para esta distribución para distintos niveles de confianza y grados de libertad. En general se tiene, 
+
+\begin{align*}
+P({\chi}^{2} > {\chi}_{\alpha}^{2}) &= \alpha  & P({\chi}^{2} \leq {\chi}_{\alpha}^{2}) = 1 - \alpha
+\end{align*}
+
+y que ${\chi}_{\alpha}^{2}= \phi_{1 - \alpha}$, el cuantil $(1 - \alpha)$ de la variable aleatoria ${\chi}^{2}$. El área sombreada de la siguiente figura muestra esta probabilidad. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_7_1.png} \hfill
+}
+
+Otro ejemplo del papel importante de la distribución ${\chi}^{2}$ es el siguiente. Se demostrara en el capitulo 8 que un buen estimador de ${\sigma}^{2}$ es la varianza muestral, 
+
+\begin{align*}
+{S}^{2} = \frac{1}{n-1} \sum_{i=1}^{n}{{({Y}_{i} - \overline{Y})}^{2}}
+\end{align*}
+
+El siguiente teorema proporciona la distribución de probabilidad para una función del estadístico ${S}^{2}$. 
+
+\begin{tcolorbox}[title = Teorema 7.3]
+Sea ${Y}_{1},{Y}_{2}, \ldots,{Y}_{n}$ una muestra aleatoria de una distribución normal con media $\mu$ y varianza ${\sigma}^{2}$. Entonces 
+
+\begin{align*}
+\frac{(n-1){S}^{2}}{{\sigma}^{2}} = \frac{1}{{\sigma}^{2}} \sum_{i=1}^{n}{{({Y}_{i} - \overline{Y})}^{2}}
+\end{align*}
+
+tiene una distribución ${\chi}^{2}$ con $(n-1)$ grados de libertad. También $\overline{Y}$ y ${S}^{2}$ son variables independientes. 
+\end{tcolorbox}
+ 
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La demostración completa de este teorema aparece en el ejercicio 13.93. Para entender mejor el resultado general, consideraremos el caso $n=2$ y demostraremos que $(n-1){S}^{2}/{\sigma}^{2}$ tiene una distribución ${\chi}^{2}$ con 1 grado de libertad. En el caso $n=2$, 
+
+\begin{align*}
+\overline{Y} = (1/2)({Y}_{1}+{Y}_{2}), 
+\end{align*}
+
+y por lo tanto, 
+
+\begin{align*}
+{S}^{2} &= \frac{1}{2-1} \sum_{i=1}^{2}{{({Y}_{i} - \overline{Y})}^{2}} \\
+&={\left[{Y}_{1} - \frac{1}{2}({Y}_{1} + {Y}_{2} )\right]}^{2} + {\left[{Y}_{2} - \frac{1}{2}({Y}_{1} + {Y}_{2} )\right]}^{2} \\
+&={\left[ \frac{1}{2}({Y}_{1} - {Y}_{2})\right]}^{2} + {\left[\frac{1}{2}({Y}_{2} - {Y}_{1})\right]}^{2} \\
+&=2{\left[\frac{1}{2}({Y}_{1} -{Y}_{2})\right]}^{2} \\
+&= \frac{{({Y}_{1} - {Y}_{2})}^{2}}{2}
+\end{align*}
+
+Se deduce que, cuando $n=2$, 
+
+\begin{align*}
+\frac{(n-1){S}^{2}}{{\sigma}^{2}} = \frac{{({Y}_{1} - {Y}_{2})}^{2}}{2{\sigma}^{2}} = {\left(\frac{{Y}_{1} - {Y}_{2}}{\sqrt{2{\sigma}^{2}}}\right)}^{2}
+\end{align*}
+
+Demostraremos que esta cantidad es igual al cuadrado de una variable aleatoria normal estándar; es decir, que se trata de una variable ${Z}^{2}$ que, como ya hemos demostrado en que posee una distribución ${\chi}^{2}$ con 1 grado de libertad. 
+
+Como ${Y}_{1}-{Y}_{2}$ es una combinación de variables aleatorias independientes distribuidas normalmente (${Y}_{1} - {Y}_{2} = {a}_{1}{Y}_{1} + {a}_{2} {Y}_{2}$ con ${a}_{1}= 1$ y ${a}_{2} = -1$), el Teorema 6.3 nos dice que ${Y}_{1} - {Y}_{2}$ tiene una distribución normal con media $1\mu - 1 \mu =0$ y varianza ${(1)}^{2}{\sigma}^{2} + {(-1)}^{2}{\sigma}^{2} = 2{\sigma}^{2}$. Por lo tanto,
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+\begin{align*}
+Z= \frac{{Y}_{1} - {Y}_{2}}{\sqrt{2{\sigma}^{2}}}
+\end{align*}
+
+tiene una distribución normal estándar. Como para $n=2$ 
+
+\begin{align*}
+\frac{(n-1){S}^{2}}{{\sigma}^{2}} = {\left(\frac{{Y}_{1} - {Y}_{2}}{\sqrt{2{\sigma}^{2}}}\right)}^{2} = {Z}^{2}
+\end{align*}
+
+se deduce que $(n-1){S}^{2}/{\sigma}^{2}$ tiene una distribución ${\chi}^{2}$ con 1 grado de libertad.
+
+En el Ejemplo 6.13 demostramos que ${U}_{1} = ({Y}_{1} + {Y}_{2})/\sigma $ y ${U}_{2} = ({Y}_{1} - {Y}_{2})/\sigma$ son variables aleatorias independientes. Observe que, debido a que $n=2$, 
+
+\begin{align*}
+\overline{Y} &= \frac{{Y}_{1} + {Y}_{2}}{2} = \frac{\sigma {U}_{1}}{2} & {S}^{2} = \frac{{({Y}_{1} - {Y}_{2})}^{2}}{2} = \frac{{(\sigma {U}_{2})}^{2}}{2} 
+\end{align*}
+
+Como $\overline{Y}$ solo es una funciones de ${U}_{1}$ y ${S}^{2}$ es una función de ${U}_{2}$, la independencia de ${U}_{1}$ y ${U}_{2}$ implica la independencia de $\overline{Y}$ y ${S}^{2}$. 
+\end{tcolorbox}
+
+El resultado del Teorema 7.1 proporciona la base para el desarrollo de procedimientos que permiten hacer inferencias acerca de la media $\mu$ de una población normal con varianza conocida ${\sigma}^{2}$.  En dicho caso el Teorema 7.1 indica que $\displaystyle \frac{\sqrt{n}(\overline{Y} - \mu)}{\sigma}$ tiene una distribución normal estándar. Cuando $\sigma$ no se conoce, puede ser estimada con $S = \sqrt{{S}^{2}}$ y la cantidad 
+
+\begin{align*}
+\sqrt{n} \left(\frac{\overline{Y} - \mu}{S}\right)
+\end{align*}
+
+proporciona la base para desarrollar métodos de inferencia respecto de $\mu$. Demostraremos que esta expresión tiene una distribución conocida como \emph{distribución t de Student} con $n-1$ grados de libertad. Esta se define de la siguiente manera. 
+
+\begin{tcolorbox}[title = Definición 7.2]
+Sea $Z$ una variable aleatoria normal estándar y sea $W$ una variable con distribución ${\chi}^{2}$ con $v$ grados de libertad. Entonces, si $W$ y $Z$ son independientes, 
+
+\begin{align*}
+T = \frac{Z}{\sqrt{W/v}}
+\end{align*}
+
+se dice que tiene una \emph{distribución t} con $v$ grados de libertad.
+\end{tcolorbox}
+
+Si ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ constituye una muestra aleatoria de una población normal con media $\mu$ y varianza ${\sigma}^{2}$, el Teorema 7.1 puede aplicarse para demostrar que $Z= \sqrt{n} (\overline{Y} -\mu)/\sigma$ tiene una distribución normal estándar. El teorema 7.3 nos dice que $W= (n-1){S}^{2}/{\sigma}^{2}$ tiene una distribución ${\chi}^{2}$ con $v=n-1$ grados de libertad y que $Z$ y $W$ son independientes (puesto que $\overline{Y}$ y ${S}^{2}$ son independientes). Entonces con la Definición 7.2, se tiene lo siguiente, 
+
+\begin{align*}
+T&=\frac{Z}{\sqrt{W/v}} = \frac{\sqrt{n}(\overline{Y} - \mu )/\sigma}{\sqrt{[(n-1){S}^{2}/{\sigma}^{2}]/(n-1)}} \\
+&= \frac{\sqrt{n}(\overline{Y} - \mu )/\sigma}{\sqrt{{S}^{2}/{\sigma}^{2}}}= \sqrt{n} \left(\frac{\overline{Y} - \mu}{S}\right) 
+\end{align*}
+
+tiene una distribución t con $(n-1)$ grados de libertad. Al igual que la función de densidad normal estándar, la función de densidad $t$ es simétrica alrededor de cero. Además para $v>1$, $E(T)=0$, y para $v>2$, $V(T)$ = v/(v-2). De esta manera, vemos que, si $v>1$, una variable aleatoria con distribución $t$ tiene el mismo valor esperado que una variable aleatoria normal estándar. No obstante, una variable normal estándar siempre tiene una varianza 1 mientras que, si $v>2$, la varianza de una variable aleatoria con una distribución $t$ siempre es mayor que 1. En la siguiente figura se muestran ambas distribuciones. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_7_2.png} \hfill
+}
+
+Ahora veremos otra aplicación de la distribución ${\chi}^{2}$, suponga que queremos comparar las varianzas de dos poblaciones normales con base en información contenida en muestras aleatorias independientes provenientes de las dos poblaciones. Suponga que se toman muestras de tamaño ${n}_{1}$ y ${n}_{2}$ de las dos poblaciones con varianzas ${\sigma}_{1}^{2}$ y ${\sigma}_{2}^{2}$, respectivamente. Si calculamos la varianza muestral para la primer muestra entonces ${S}_{1}^{2}$ calcula ${\sigma}_{1}^{2}$. Del mismo modo para la segunda muestra se tiene que ${S}_{2}^{2}$ calcula ${\sigma}_{2}^{2}$. Al dividir ambas varianzas muestrales entonces esta razón podría usarse para hacer inferencias acerca de las magnitudes relativas de ${\sigma}_{1}^{2}$ y ${\sigma}_{2}^{2}$. Si dividimos cada ${S}_{i}^{2}$ entre ${\sigma}_{i}^{2}$ entonces la razon resultante 
+
+\begin{align*}
+\frac{{S}_{1}^{2}/{\sigma}_{1}^{2}}{{S}_{2}^{2}/{\sigma}_{2}^{2}} = \left(\frac{{\sigma}_{2}^{2}}{{\sigma}_{1}^{2}}\right) \left(\frac{{S}_{1}^{2}}{{S}_{2}^{2}}\right)
+\end{align*}
+
+tiene una \emph{distribución} $F$ con $({n}_{1} - 1)$ grados de libertad en el numerador y $({n}_{2} - 1)$ grados de libertad en el denominador. La definición de esta variable es la siguiente. 
+
+\begin{tcolorbox}[title = Definición 7.3]
+Sean ${W}_{1}$ y ${W}_{2}$ variables aleatorias \emph{independientes} con distribución ${\chi}^{2}$, con ${v}_{1}$ y ${v}_{2}$ grados de libertad, respectivamente. Entonces se dice que 
+
+\begin{align*}
+F=\frac{{W}_{1}/{v}_{1}}{{W}_{2}/{v}_{2}}
+\end{align*}
+
+tiene una distribución $F$ con ${v}_{1}$ grados de libertad en el numerador y ${v}_{2}$ grados de libertad en el denominador. 
+\end{tcolorbox}
+
+Consideremos dos muestras aleatorias normales tomadas de distribuciones normales, sabemos que ${W}_{1}=({n}_{1} - 1){S}_{1}^{2}/{\sigma}_{1}^{2}$ y ${W}_{2} = ({n}_{2} - 1){S}_{2}^{2}/{\sigma}_{2}^{2}$ tienen distribuciones ${\chi}^{2}$ independientes con ${v}_{1} = ({n}_{1} - 1)$ y ${v}_{2} = ({n}_{2} - 1)$ grados de libertad, respectivamente. Entonces la definición anterior implica lo siguiente. 
+
+\begin{align*}
+F=\frac{{W}_{1}/{v}_{1}}{{W}_{2}/{v}_{2}} = \frac{\left[({n}_{1} - 1){S}_{1}^{2}/{\sigma}_{1}^{2}\right]/({n}_{1} - 1)}{\left[({n}_{2} - 1){S}_{2}^{2}/{\sigma}_{2}^{2}\right]/({n}_{2} - 1)} = \frac{{S}_{1}^{2}/{\sigma}_{1}^{2}}{{S}_{2}^{2}/{\sigma}_{2}^{2}}
+\end{align*}
+
+tiene una distribución $F$ con $({n}_{1} - 1)$ grados de libertad en el numerador y $({n}_{2} - 1)$ grados de libertad en el denominador. Se puede demostrar que esta distribución tiene $E(F) = {v}_{2}/({v}_{2} - 2)$ si ${v}_{2}>2$. También si ${v}_{2}>4$, entonces $V(F) = [2{v}_{2}^{2}({v}_{1} + {v}_{2} -2)]/[{v}_{1}{({v}_{2} - 2)}^{2}({v}_{2} - 4)]$. Observamos que la media de una variable aleatorias con distribución $F$ depende sólo del número de grados de libertad ${v}_{2}$ del denominados. Se observa una distribución $F$ en la siguiente figura. 
+
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_7_3.png} \hfill
+}
+
+\section{\textbf{7.3} Teorema del límite central}
+
+Un resultado importante es de la estadística es el \emph{Teorema del límite central}, este resultado nos ayuda cuando hay variables aleatorias que no tienen una distribución normal. 
+
+\begin{tcolorbox}[title = Teorema 7.4]
+\textbf{Teorema del límite central:} Sean ${Y}_{1},{Y}_{2}, \ldots, {Y}_{n}$ variables aleatorias independientes y distribuidas idénticamente con $E({Y}_{i}) = \mu$ y $V({Y}_{i}) = {\sigma}^{2}< \infty$. Definamos 
+
+\begin{align*}
+{U}_{n} = \frac{\displaystyle \sum_{i=1}^{n}{{Y}_{i}} - n\mu}{\sigma \sqrt{n}} = \frac{\overline{Y}-\mu}{\sigma / \sqrt{n}}
+\end{align*}
+
+donde $\overline{Y} = \frac{1}{n} \displaystyle \sum_{i=1}^{n}{{Y}_{i}}$. Entonces la función de distribución de ${U}_{n}$ converge hacia la función de distribución normal estándar cuando $n \rightarrow \infty$. Esto es, 
+
+\begin{align*}
+\lim_{n \rightarrow \infty}{P({U}_{n} \leq u)} = \int_{-\infty}^{u}{\frac{1}{\sqrt{2\pi}}{e}^{-{t}^{2}/2}dt}
+\end{align*}
+
+para toda $u$. 
+\end{tcolorbox}
+
+En otras palabras este teorema implica que conforme incremente en tamaño una muestra aleatoria, esta empieza a tener propiedades similares a la distribución normal. Esto se puede expresar de otra manera más simple. Sea el estadístico $\overline{Y}$, se puede decir que esta \emph{distribuido normalmente en forma asintótica} con media $\mu$ y varianza ${\sigma}^{2}/n$. El teorema del límite central se puede aplicar a una muestra aleatoria ${Y}_{1},{Y}_{2},\ldots,{Y}_{n}$ para \emph{cualquier} distribución mientras que $E({Y}_{i}) = \mu$ y $V({Y}_{i}) = {\sigma}^{2}$ sean finitas y el tamaño de muestra sea grande. 
+
+\section{\textbf{7.4} Una demostración del teorema del límite central}
+
+\begin{tcolorbox}[title = Teorema 7.5]
+Sean $Y$ y ${Y}_{1}$,${Y}_{2}$,${Y}_{3}$, $\ldots$, variables aleatorias con funciones generadoras de momento $m(t)$ y ${m}_{1}(t)$, ${m}_{2}(t)$,${m}_{3}(t)$,$\ldots$, respectivamente. Si 
+
+\begin{align*}
+\lim_{n \rightarrow \infty} {{m}_{n}(t)} = m(t)
+\end{align*}
+
+para toda $t$ real, entonces la función de distribución de ${Y}_{n}$ converge hacia la función de distribución de $Y$ cuando $n\rightarrow \infty$. 
+\end{tcolorbox}
+
+A continuación de dará la demostración del teorema del límite central, Teorema 7.4.
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Sea 
+
+\begin{align*}
+{U}_{n} &= \sqrt{n} \left(\frac{\overline{Y} - \mu }{\sigma}\right) = \frac{1}{\sqrt{n}}\left(\frac{\displaystyle \sum_{i=1}^{n}{{Y}_{i}} - n\mu }{\sigma}\right) \\
+&= \frac{1}{\sqrt{n}}\sum_{i=1}^{n}{{Z}_{i}}
+\end{align*}
+
+donde ${Z}_{i} = \displaystyle \frac{{Y}_{i} - \mu}{\sigma}$. Debido a que las ${Y}_{i}$ de las variables aleatorias son independientes e idénticamente distribuidas, ${Z}_{i}$, $i = 1,2,\ldots, n$, son independientes e idénticamente distribuidas con $({Z}_{i}) = 0$ y $V({Z}_{i}) = 1$. 
+
+Como la función generadora de momento de la suma de variables aleatorias independientes es el producto de las funciones generadoras de momentos de cada una, 
+
+\begin{align*}
+{m}_{\sum{{Z}_{i}}}(t) &= {m}_{{Z}_{1}}(t)\times {m}_{{Z}_{2}}(t) \times \cdots \times {m}_{{Z}_{n}}(t) \\
+&= {\left[{m}_{{Z}_{1}}(t)\right]}^{n}
+\end{align*}
+
+y 
+
+\begin{align*}
+{m}_{{U}_{n}}(t) = {m}_{\sum{{Z}_{i}}}\left(\frac{1}{\sqrt{n}}\right) = {\left[{m}_{{Z}_{1}}\left(\frac{1}{\sqrt{n}}\right)\right]}^{n}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Por el teorema de Taylor, con residuo
+
+\begin{align*}
+{m}_{{Z}_{1}}(t) = {m}_{{Z}_{1}}(0) + {m}_{{Z}_{1}}'(0)t + {m}_{{Z}_{1}}''(\xi)\frac{{t}^{2}}{2}, 
+\end{align*}
+
+donde $0< \xi < t$ y como ${m}_{{Z}_{1}}(0) = E({e}^{0{Z}_{1}}) = E(1) = 1$ y ${m}_{{Z}_{1}}'(0) = E({Z}_{1})=0$, 
+
+\begin{align*}
+{m}_{{Z}_{1}}(t) = 1 + \frac{{m}_{{Z}_{1}}''(\xi)}{2}{t}^{2}
+\end{align*}
+
+donde $0<\xi < 1$. Por lo tanto,
+
+\begin{align*}
+{m}_{{U}_{n}}(t) &= {\left[1 + \frac{{m}_{{Z}_{1}}''({\xi}_{n})}{2}{\left(\frac{1}{\sqrt{n}}\right)}^{2}\right]}^{n} \\
+&={\left[1 + \frac{{m}_{{Z}_{1}}''({\xi}_{n}){t}^{2}/2}{n}\right]}^{n}
+\end{align*}
+
+donde $0< {\xi}_{n} < \frac{t}{\sqrt{n}}$. Observe que conforme $n \rightarrow \infty$, ${\xi}_{n} \rightarrow 0$ y ${m}_{{Z}_{1}}''({\xi}_{n}){t}^{2}/2 \rightarrow {m}_{{Z}_{1}}''(0){t}^{2}/2 = E({Z}_{1}^{2}){t}^{2}/2 = {t}^{2}/2$ por que $E({Z}_{1}^{2}) = V({Z}_{1}) = 1$. Recuerde que si 
+
+\begin{align*}
+\lim_{n\rightarrow \infty}{{b}_{n}}&=b & &\text{entonces} & \lim_{n \rightarrow \infty} {{\left(1 + \frac{{b}_{n}}{n}\right)}^{n}} = {e}^{b}
+\end{align*}
+
+Finalmente, 
+
+\begin{align*}
+    \lim_{n \rightarrow \infty}{{m}_{{U}_{n}}(t)} = \lim_{n \rightarrow \infty}{{\left[1 + \frac{{m}_{{Z}_{1}}''({\xi}_{n}){t}^{2}/2}{n}\right]}^{n}} = {e}^{{t}^{2}/2}, 
+\end{align*}
+
+es la función generadora de momento para una variable aleatorias normal estándar. Con la aplicación del Teorema 7.5 concluimos que ${U}_{n}$ tiene una función de distribución que converge hacia la función de distribución de la variable aleatoria normal estándar. 
+\end{tcolorbox}
+
+\section{\textbf{7.5} Aproximación normal a la distribución binomial}
+
+El teorema del límite central también se puede usar para aproximar probabilidades de algunas variables aleatorias discretas cuando las probabilidades exactas sean difíciles de calcular. Por ejemplo, suponemos que $Y$ tiene una distribución binomial con $n$ intentos y probabilidad de éxito en cualquier intento denotado por $p$. Si $n$ es demasiado grande encontrar la probabilidad de algún valor cercano a $n$ se vuelve una tarea muy difícil. De manera alternativa, podemos ver a $Y$, el número de éxitos en $n$ intentos, como una suma de una muestra formada de ceros y unos, esto es, 
+
+\begin{align*}
+    Y = \sum_{i=1}^{n}{{X}_{i}}
+\end{align*}
+
+donde 
+
+\begin{align*}
+    {X}_{i} = \begin{cases} 1, & \text{si el $i$-ésimo intento resulta en éxito}, \\
+    0, & \text{en otro caso} \end{cases}
+\end{align*}
+
+Las variables aleatorias ${X}_{i}$ para $i = 1,2,\ldots, n$ son independientes (porque los intentos son independientes) y es fácil demostrar que $E({X}_{i}) = p$ y $V({X}_{i}) = p(1 -p)$ para $i = 1,2,\ldots,n$. En consecuencia, cuando $n$ es grande, la fracción muestral de éxitos, 
+
+\begin{align*}
+    \frac{Y}{n} = \frac{1}{n} \sum_{i=1}^{n}{{X}_{i}} = \overline{X}
+\end{align*}
+
+posee una distribución muestral aproximadamente normal con media $E({X}_{i}) = p$ y varianza $V({X}_{i})/n = p(1-p)/n$. 
+
+Entonces, hemos empleado el Teorema 7.4 para establecer que si $Y$ es una variable aleatoria binomial con parámetros $n$ y $p$ si $n$ es grande, entonces $Y/n$ tiene aproximadamente la misma distribución que $U$, donde $U$ está distribuida normalmente con media ${\mu}_{U} = p$ y varianza ${\sigma}_{U}^{2} = p(1 -p)/n$. De la misma manera para $n$ grande, podemos considerar que $Y$ tiene aproximadamente la misma distribución que $W$, donde $W$ está distribuida normalmente con media ${\mu}_{W} = np$ y varianza ${\sigma}_{W}^{2} = np(1 -p)$. 
+
+Sin embargo el aplicar este teorema no siempre funciona bien. Para que funcione $n$ necesita ser relativamente grande y que $p$ no sea cercano a cero o uno. Una regla práctica útil es que la aproximación normal a la distribución binomial es apropiada cuando $p \pm 3 \sqrt{pq/n}$ está en el intercalo (0,1), es decir, si 
+
+\begin{align*}
+    0 &< p - 3 \sqrt{pq/n}  & &\text{y} & p+3 \sqrt{pq/n} &< 1
+\end{align*}
+
+Además se puede demostrar un criterio más conveniente pero similar que dice que la aproximación normal es adecuada si 
+
+\begin{align*}
+    n > 9\left(\frac{\text{el mayor de $p$ y $q$}}{\text{el menor que $p$ y $q$}} \right)
+\end{align*}
+
+%Great symbol look-up site: \href{http://detexify.kirelabs.org/}{Detexify}\\
+%\href{http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf}{\LaTeX\ Mathematical Symbols}\\
+%\href{ftp://tug.ctan.org/pub/tex-archive/info/symbols/comprehensive/symbols-letter.pdf}{The Comprehensive \LaTeX\ Symbol List}\\ 
+%\href{http://mirrors.med.harvard.edu/ctan/info/lshort/english/lshort.pdf}{The Not So Short Introduction to \LaTeX\ 2$\varepsilon$}\\
+
+\end{multicols}
+
+%\SetWatermarkHorCenter{0.65\paperwidth}
+\end{document}
