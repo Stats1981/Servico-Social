@@ -1,0 +1,694 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overleaf Example: A quick guide to LaTeX
+%
+% Original Source: Dave Richeson (divisbyzero.com), Dickinson College
+% Modified By: Paul Gessler, Overleaf (overleaf.com)
+% 
+% A one-size-fits-all LaTeX cheat sheet. Kept to two pages, so it 
+% can be printed (double-sided) on one piece of paper
+% 
+% Feel free to distribute this example, but please keep the referral
+% to divisbyzero.com
+% 
+% Guidance on the use of the Overleaf logos can be found here:
+% https://www.overleaf.com/for/partners/logos 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use Overleaf: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[10pt,landscape,letterpaper]{article}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{spverbatim}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,urlcolor=olgreen]{hyperref}
+\usepackage{booktabs}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
+\setsansfont{Fira Sans}
+\usepackage{tcolorbox} 
+\setmonofont{Inconsolata}
+%\usepackage{unicode-math}
+%\setmathfont{TeX Gyre Pagella Math}
+\usepackage{microtype}
+% dirty fix for microtype
+\makeatletter
+\def\MT@is@composite#1#2\relax{%
+  \ifx\\#2\\\else
+    \expandafter\def\expandafter\MT@char\expandafter{\csname\expandafter
+                    \string\csname\MT@encoding\endcsname
+                    \MT@detokenize@n{#1}-\MT@detokenize@n{#2}\endcsname}%
+    % 3 lines added:
+    \ifx\UnicodeEncodingName\@undefined\else
+      \expandafter\expandafter\expandafter\MT@is@uni@comp\MT@char\iffontchar\else\fi\relax
+    \fi
+    \expandafter\expandafter\expandafter\MT@is@letter\MT@char\relax\relax
+    \ifnum\MT@char@ < \z@
+      \ifMT@xunicode
+        \edef\MT@char{\MT@exp@two@c\MT@strip@prefix\meaning\MT@char>\relax}%
+          \expandafter\MT@exp@two@c\expandafter\MT@is@charx\expandafter
+            \MT@char\MT@charxstring\relax\relax\relax\relax\relax
+      \fi
+    \fi
+  \fi
+}
+% new:
+\def\MT@is@uni@comp#1\iffontchar#2\else#3\fi\relax{%
+  \ifx\\#2\\\else\edef\MT@char{\iffontchar#2\fi}\fi
+}
+\makeatother
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{margin=0.4in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\sffamily\large}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\sffamily\normalsize\itshape}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\itshape}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+% -----------------------------------------------------------------------
+
+\usepackage{academicons}
+
+%\usepackage{draftwatermark,afterpage,xcolor}
+%\definecolor{olgreen}{HTML}{4f9c45}
+%\SetWatermarkText{\aiOverleaf}
+%\SetWatermarkFontSize{0.9\paperheight}
+%\SetWatermarkAngle{0}
+%\SetWatermarkColor[HTML]{EDF5EC}
+%\SetWatermarkLightness{0.95}
+%\SetWatermarkHorCenter{0.35\paperwidth}
+
+\begin{document}
+\footnotesize
+%\raggedright
+
+\begin{center}
+  {\huge\sffamily\bfseries Capítulo 4 Variables continuas y sus distribuciones de probabilidad}  \\
+\end{center}
+\setlength{\premulticols}{0pt}
+\setlength{\postmulticols}{0pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{1.8em}
+\begin{multicols}{3}
+
+\section{\textbf{4.2} Distribución de probabilidad para una variable aleatoria continua}
+
+Antes de expresar una definición formal para una variable aleatoria continua, debemos definir la función de distribución asociada con una variable aleatoria. 
+
+\begin{tcolorbox}[title = Definición 4.1]
+Denote con $Y$ cualquier variable aleatoria. La \emph{función de distribución} de $Y$, denotada por $F(y)$, es yal que $F(y)= P(Y \leq y)$ para $- \infty < y < \infty$.
+\end{tcolorbox}
+
+La naturaleza de la función de distribución asociada con una variable aleatoria determina si la variable es continua o discreta. Por ejemplo las funciones de distribución para variables aleatorias discretas son siempre funciones escalón porque la función de distribución acumulativa aumenta sólo en el número finito o contable de puntos con probabilidades positivas. A continuación se ven algunas propiedades de las funciones de distribución. 
+
+\begin{tcolorbox}[title = Teorema 4.1]
+\textbf{Propiedades de una función de distribución} Si $F(y)$ es una función de distribución, entonces
+
+\begin{enumerate}
+
+\item[1.] $F(-\infty) \equiv \lim_{y \rightarrow -\infty}{F(y)}=0$.
+
+\item[2.] $F(\infty) \equiv \lim_{y \rightarrow \infty}{F(y)} = 1$.
+
+\item[3.] $F(y)$ es una función no decreciente de $y$. [Si ${y}_{1}$ y ${y}_{2}$ son \emph{cualesquiera} valores de manera que ${y}_{1}<{y}_{2}$, entonces $F({y}_{1}) \leq F({y}_{2})$]
+
+\end{enumerate}
+\end{tcolorbox}
+
+Ahora se puede establecer una definición de una variable aleatoria continua. 
+
+\begin{tcolorbox}[title = Definición 4.2]
+Una variable aleatoria $Y$ con función de distribución $F(y)$ se dice que es \emph{continua} si $F(y)$ es continua, para $-\infty < y < \infty$.
+\end{tcolorbox}
+
+Si $y$ es una variable aleatoria continua, entonces, para cualquier número real $y$ se tiene que $P(Y= y) = 0$. La derivada de $F(y)$ es otra función de gran importancia en teoría de probabilidad y estadística. 
+
+\begin{tcolorbox}[title = Definición 4.3]
+Sea $F(y)$ la función de distribución para una variable aleatoria continua $Y$. Entonces $f(y)$, dada por 
+
+\begin{align*}
+f(y) = \frac{dF(y)}{dy} = F'(y)
+\end{align*}
+
+siempre que exista la derivada, se denomina \emph{función de densidad de probabilidad} para la variable aleatoria $Y$. 
+\end{tcolorbox}
+
+Se deduce de las Definiciones 4.2 y 4.3 que $F(y)$ se puede escribir como 
+
+\begin{align*}
+F(y) = \int_{-\infty}^{y}{f(t)dt}
+\end{align*}
+
+donde $f(\cdot)$ es la función de densidad de probabilidad y $t$ se usa como la variable de integración. La relación entre las funciones de distribución y de densidad se muestran gráficamente en la siguiente figura. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_4_1.png} \hfill
+}
+
+\begin{tcolorbox}[title = Teorema 4.2]
+\textbf{Propiedades de una función de densidad} Si $f(y)$ es una función de densidad para una variable aleatoria continua, entonces
+
+\begin{enumerate}
+
+\item[1.] $f(y) \geq 0$ para toda $y$, $-\infty < y < \infty$. 
+
+\item[2.] $\displaystyle \int_{-\infty}^{\infty}{f(y)dy}=1$. 
+
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Definición 4.4]
+Denotemos con $Y$ cualquier variable aleatoria. Si $0 < p <1$, el $p$-ésimo \emph{cuantil} de $Y$, denotado por ${\phi}_{p}$, es el mínimo valor tal que $P(Y \leq {\phi}_{q}) = F({\phi}_{p}) \geq p$. Si $Y$ es continua, ${\phi}_{p}$ es el mínimo valor tal que $F({\phi}_{p})=P(Y\leq {\phi}_{q}) = p$. Algunos prefieren llamar a ${\phi}_{p}$ al 100$p$-ésimo \emph{percentil} de $Y$. 
+\end{tcolorbox}
+
+El siguiente paso es hallar la probabilidad de que $Y$ caiga en un intervalo específico; esto es, $P(a \leq Y \leq b)$. Se espera que esta probabilidad sea igual a un área correspondiente bajo la función de densidad $f(y)$. Entonces si $a <b$ se tiene 
+
+\begin{align*}
+P(a \leq Y \leq b) &= P(Y\leq b) - P(Y \leq a) \\
+&= F(b) - F(a) = \int_{a}^{b}{f(y)dy}
+\end{align*}
+
+Como $P(Y = a) = 0$ se tiene el siguiente resultado. 
+
+\begin{tcolorbox}[title = Teorema 4.3]
+Si la variable aleatoria $Y$ tiene función de densidad $f(y)$ y $a<b$, entonces la probabilidad de que $Y$ caiga en el intervalo $[a,b]$ es 
+
+\begin{align*}
+P(a \leq Y \leq b) = \int_{a}^{b}{f(y)dy}
+\end{align*}
+\end{tcolorbox}
+
+Esta probabilidad es el área sombreada en la siguiente figura. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_4_2.png} \hfill
+}
+
+Si $Y$ es una variable aleatoria continua y $a$ y $b$ son constantes tales que $a<b$, entonces $P(Y=a)=0$ y $P(Y=b)=0$ y el Teorema 4.3 implica que
+
+\begin{align*}
+P(a < Y < b) &= P(a \leq Y < b) = P(a < Y \leq b) \\
+&= P(a \leq Y \leq b) = \int_{a}^{b}{f(y)dy} 
+\end{align*}
+
+\section{\textbf{4.3} Valores esperados para variables aleatorias continuas}
+
+El siguiente paso en el estudio de variables aleatorias continuas es hallar sus medias, varianzas y desviaciones estándar. 
+
+\begin{tcolorbox}[title = Definición 4.5]
+El valor esperado de una variable aleatoria continua $Y$ es 
+
+\begin{align*}
+E(Y) = \int_{-\infty}^{\infty}{yf(y) dy,}
+\end{align*}
+
+siempre que exista la integral. 
+\end{tcolorbox}
+
+Observamos que esta definición es similar al caso discreto, solo que ahora $f(y)dy$ corresponde a $p(y)$ y la integración evoluciona de una sumatoria. Al igual que en el caso discreto esto se puede interpretar como la media o promedio. De la misma manera cuando se quiere encontrar el valor esperado de una función de una variable aleatoria se tiene el siguiente teorema. 
+
+\begin{tcolorbox}[title = Teorema 4.4]
+Sea $g(Y)$ una función de $Y$; entonces el valor esperado de $g(Y)$ está dado por 
+
+\begin{align*}
+E[g(Y)] = \int_{-\infty}^{\infty}{g(y)f(y)dy}
+\end{align*}
+
+siempre que exista la integral. 
+\end{tcolorbox}
+
+Técnicamente, se dice que $E(Y)$ existe si 
+
+\begin{align*}
+\int_{-\infty}^{\infty}{|y|f(y) dy} < \infty
+\end{align*}
+
+De manera similar al caso discreto los siguientes tres resultados evolucionan como consecuencia de teoremas de integración. 
+
+\begin{tcolorbox}[title = Teorema 4.5]
+Sea $c$ una constante y sean $g(Y), {g}_{1}(Y), {g}_{2}(Y), \ldots, {g}_{k}(Y)$ funciones de una variable aleatoria continua $Y$. Entonces se cumple los siguientes resultados: 
+
+\begin{enumerate}
+
+\item[1.] $E(c) = c$.
+
+\item[2.] $E[cg(Y)] = cE[g(Y)]$.
+
+\item[3.] $E[{g}_{1}(Y)+ {g}_{2}(Y)+ \ldots+ {g}_{k}(Y)] = E[{g}_{1}(Y)]+ E[{g}_{2}(Y)]+ \ldots+ E[{g}_{k}(Y)]$.
+\end{enumerate}
+\end{tcolorbox}
+
+Al igual que en el caso de variables aleatorias discretas, frecuentemente se busca el valor esperado de la función $g(Y) = {(Y - \mu)}^{2}$. Como se vio en el capítulo anterior Este valor esperado corresponde a la varianza de la variable aleatoria $Y$. 
+
+\section{\textbf{4.4} La distribución de probabilidad uniforme}
+
+Suponga que se quiere conocer la probabilidad de que ocurra un evento que esta distribuido uniformemente en un intervalo. La variable aleatoria que mide esto tiene una distribución de probabilidad uniforme con la siguiente definición. 
+
+\begin{tcolorbox}[title = Definición 4.6]
+Si ${\theta}_{1}<{\theta}_{2}$, se dice que una variable aleatoria $Y$ tiene \emph{distribución de probabilidad uniforme} en el intervalo $({\theta}_{1},{\theta}_{2})$ si y sólo si la función de densidad de $Y$ es 
+
+\begin{align*}
+f(y) = \begin{cases} \frac{1}{{\theta}_{2} - {\theta}_{1}}, & {\theta}_{1} \leq y \leq {\theta}_{2}, \\
+0, & \text{en cualquier otro punto}\end{cases}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Definición 4.7]
+Las constantes que determinan la forma específica de una función de densidad se denominan \emph{parámetros} de la función de densidad. 
+\end{tcolorbox}
+
+En la distribución de probabilidad uniforme las cantidades ${\theta}_{1}$ y ${\theta}_{2}$ son parámetros de la función de densidad. Tanto la amplitud como la probabilidad de que $Y$ caiga en cualquier intervalo determinado dependen de los valores de ${\theta}_{1}$ y ${\theta}_{2}$. 
+
+\begin{tcolorbox}[title = Teorema 4.6]
+Si ${\theta}_{1} < {\theta}_{2}$ y $Y$ es una variable aleatoria uniformemente distribuida en el intervalo $({\theta}_{1},{\theta}_{2})$, entonces 
+
+\begin{align*}
+\mu &= E(Y) = \frac{{\theta}_{1} + {\theta}_{2}}{2} & {\sigma}^{2} &= V(Y) = \frac{{({\theta}_{1} - {\theta}_{2})}^{2}}{12}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Por la Definición 4.5, 
+
+\begin{align*}
+E(Y) &= \int_{-\infty}^{\infty}{yf(y)dy} \\
+ & = \int_{{\theta}_{1}}^{{\theta}_{2}}{y\left(\frac{1}{{\theta}_{2} - {\theta}_{1}}\right)dy } \\
+ & = \left(\frac{1}{{\theta}_{2} - {\theta}_{1}}\right) \left. \frac{{y}^{2}}{2}\right \vert_{{\theta}_{1}}^{{\theta}_{2}} = \frac{{\theta}_{2}^{2} - {\theta}_{1}^{2}}{2({\theta}_{2} - {\theta}_{1})} \\
+ & = \frac{{\theta}_{2} + {\theta}_{1}}{2}
+\end{align*}
+
+Observe que la media de una variable aleatoria uniforme es simplemente el valor que está a la mitad entre los valores de los dos parámetros, ${\theta}_{1}$ y ${\theta}_{2}$. 
+\end{tcolorbox}
+
+\section{\textbf{4.5} La distribución de probabilidad normal}
+
+La distribución de probabilidad continua que más se utiliza es la distribución normal, ya que en la naturaleza existen numerosos eventos que siguen una distribución normal. Su función de densidad normal es la siguiente.  
+
+\begin{tcolorbox}[title = Definición 4.8]
+Se dice que una variable $Y$ tiene una \emph{distribución normal de probabilidad} si y sólo si, para $\sigma >0$ y $-\infty < \mu < \infty$, la función de densidad de $Y$ es 
+
+\begin{align*}
+f(y) &= \frac{1}{\sigma \sqrt{2\pi}}{e}^{\frac{-{(y - \mu)}^{2}}{2{\sigma}^{2}}}, & -\infty &< y < \infty 
+\end{align*}
+
+\end{tcolorbox}
+
+Esta función de densidad contiene dos parámetros $\mu$ y $\sigma$. 
+
+\begin{tcolorbox}[title = Teorema 4.7]
+Si $Y$ es una variable aleatoria normalmente distribuida con parámetros $\mu$ y $\sigma$, entonces
+
+\begin{align*}
+E(Y) &= \mu & V(Y) &= {\sigma}^{2}
+\end{align*}
+\end{tcolorbox}
+
+La demostración de este teorema se vera en la sección 4.9. Este resultado implica que el parámetro $\mu$ localiza el centro de la distribución y que $\sigma$ mide su dispersión. En la siguiente figura se ilustra la función de densidad normal. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_4_3.png} \hfill
+}
+
+Las áreas bajo la función de densidad normal correspondientes a $P(a\leq Y \leq b)$ requieren la evaluación de la integral
+
+\begin{align*}
+\int_{a}^{b}{\frac{1}{\sigma \sqrt{2 \pi}}{e}^{\frac{-{(y - \mu)}^{2}}{2{\sigma}^{2}}}dy}
+\end{align*}
+
+La función de densidad normal es simétrica alrededor del valor $\mu$, de modo que las áreas tienen que ser tabuladas en sólo un lado de la media. Las áreas tabuladas están a la derecha de los puntos $z$, donde $z$, es la distancia desde la media, medidas en desviaciones estándar. Esta área esta sombreada en la siguiente figura. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_4_4.png} \hfill
+}
+
+Desafortunadamente esta integral no tiene una solución inmediata y se necesita resolver con el uso de técnicas de integración numérica. En ocasiones se pueden encontrar tablas de valores para distribuciones de probabilidad con distintos valores de parámetros. Sin embargo esto es difícil para la distribución normal ya que existen dos parámetros que pueden tomar muchos valores. Por lo tanto es necesario transformar la variable aleatoria normal $Y$ en una variable aleatoria \emph{normal estándar} $Z$ si usamos la relación 
+
+\begin{align*}
+Z = \frac{Y - \mu}{\sigma}
+\end{align*}
+
+$Z$ localiza un punto medido desde la media de una variable aleatoria normal original, con la distancia \emph{expresada en unidades de la desviación estándar} de la variable aleatoria normal original. Esta nueva variable aleatoria tiene distribución normal con media $\mu = 0$ y desviación estándar $\sigma =1$. La demostración de esto se proporciona en el capítulo 6. 
+
+\section{\textbf{4.6} La distribución de probabilidad gamma}
+
+Algunas variables aleatorias son siempre no negativas y por varias razones dan distribuciones de datos que están sesgados o no simétricos a la derecha. En otras palabras, casi toda el área bajo la función de densidad está ubicada cerca del origen y la función de densidad cae gradualmente conforme $y$ aumenta. En la siguiente figura se observa un ejemplo de esto. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_4_5.png} \hfill
+}
+
+La función de densidad gamma modela de manera adecuada estos datos. 
+
+\begin{tcolorbox}[title = Definición 4.9]
+Se dice que una variable aleatoria $Y$ tiene una \emph{distribución gamma con parámetros} $\alpha > 0$ y $\beta > 0$ si y sólo si la función de densidad de $Y$ es 
+
+\begin{align*}
+f(y) = \begin{cases} \frac{{y}^{\alpha-1}{e}^{-y/{\beta}}}{{\beta}^{\alpha}\Gamma(\alpha)}, & 0 \leq y < \infty, \\ 
+0 & \text{en cualquier otro punto} \end{cases}
+\end{align*}
+
+donde 
+
+\begin{align*}
+\Gamma (\alpha) = \int_{0}^{\infty}{{y}^{\alpha -1}}
+\end{align*}
+\end{tcolorbox}
+
+La cantidad $\Gamma (\alpha)$ se conoce como \emph{función gamma}. La integración directa verificará que $\Gamma (1) = 1$. La integración por partes verifica que $\Gamma (\alpha) = (\alpha - 1)\Gamma (\alpha -1)$ para cualquier $\alpha > 1$ y que $\Gamma (n) = (n-1)!$, siempre que $n$ sea un entero. En esta distribución $\alpha$ recibe a veces el nombre de \emph{parámetro de forma} asociado con una distribución gamma. El parámetro $\beta$ generalmente se llama \emph{parámetro de escala} porque al multiplicar una variable aleatoria con distribución gamma por una constante positiva produce una variable aleatoria con la misma distribución, el mismo valor de $\alpha$ pero un valor alterado de $\beta$. 
+
+
+\begin{tcolorbox}[title = Teorema 4.8]
+Si $Y$ tiene una distribución gamma con parámetros $\alpha$ y $\beta$, entonces 
+
+\begin{align*}
+\mu &= E(Y) = \alpha \beta & {\sigma}^{2} & = V(Y) = \alpha{\beta}^{2}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+\begin{align*}
+E(Y) = \int_{-\infty}^{\infty}{yf(y)dy} = \int_{0}^{\infty}{y\left(\frac{{y}^{\alpha-1}{e}^{-y/\beta}}{{\beta}^{\alpha}\Gamma(\alpha)}\right)dy}
+\end{align*}
+
+Por definición, la función de densidad gamma es tal que 
+
+\begin{align*}
+\int_{0}^{\infty}{\frac{{y}^{\alpha-1}{e}^{-y/\beta}}{{\beta}^{\alpha}\Gamma(\alpha)}dy} = 1
+\end{align*}
+
+Por lo tanto, 
+
+\begin{align*}
+\int_{0}^{\infty}{{y}^{\alpha-1}{e}^{-y/\beta}dy} = {\beta}^{\alpha}\Gamma(\alpha)
+\end{align*}
+
+y 
+
+\begin{align*}
+E(Y) &= \int_{0}^{\infty}{\frac{{y}^{\alpha}{e}^{-y/\beta}}{{\beta}^{\alpha}\Gamma(\alpha)}dy} = \frac{1}{{\beta}^{\alpha}\Gamma(\alpha)} \int_{0}^{\infty}{{y}^{\alpha}{e}^{-y/\beta}dy} \\
+&= \frac{1}{{\beta}^{\alpha}}[{\beta}^{\alpha +1}\Gamma(\alpha +)] = \frac{\beta \alpha \Gamma(\alpha)}{\Gamma(\alpha)} = \alpha \beta
+\end{align*}
+
+Del Ejercicio 4.24, $V(Y) = E[{Y}^{2}] - {[E(Y)]}^{2}$. Además, 
+
+\begin{align*}
+    E({Y}^{2}) &= \int_{0}^{\infty}{{y}^{2}\left(\frac{{y}^{\alpha-1}{e}^{-y/\beta}}{{\beta}^{\alpha}\Gamma(\alpha)}\right)dy} \\
+    &= \frac{1}{{\beta}^{\alpha}\Gamma(\alpha)}\int_{0}^{\infty}{\left({y}^{\alpha+1}{e}^{-y/\beta}\right)dy} \\
+    &= \frac{1}{{\beta}^{\alpha}\Gamma(\alpha)}[{\beta}^{\alpha + 2}\Gamma(\alpha + 2)]\\
+    &= \frac{{\beta}^{2}(\alpha + 1)\alpha \Gamma(\alpha )}{\Gamma (\alpha)} = \alpha (\alpha +1){\beta}^{2}\\
+\end{align*}
+Entonces $V(Y) = E[{Y}^{2}] - {[E(Y)]}^{2}$, donde, desde la primera parte de la derivación, $E(Y) = \alpha \beta$. Sustituyendo $E[{Y}^{2}]$ y $E(Y)$ en la formula para $V(Y)$, obtenemos 
+
+\begin{align*}
+V(Y) &= \alpha (\alpha + 1){\beta}^{2} - {(\alpha \beta)}^{2} \\
+&= {\alpha}^{2}{\beta}^{2} + \alpha {\beta}^{2} - {\alpha}^{2}{\beta}^{2} \\
+&= \alpha {\beta}^{2}
+\end{align*}
+\end{tcolorbox}
+
+Dos casos especiales de variables aleatorias con distribución gamma ameritan consideración particular. 
+
+\begin{tcolorbox}[title = Definición 4.10]
+Sea $v$ un entero positivo. Se dice qeu una variable aleatoria $Y$ tiene \emph{distribución ji cuadrada con $v$ grados de libertad} si y sólo si $Y$ es una variable aleatoria con distribución fgamma y parámetros $\alpha = v/2$ y $\beta = 2$.  
+\end{tcolorbox}
+
+Una variable aleatoria con distribución ji cuadrada se denomina \emph{variable aleatoria $({\chi}^{2})$ ji cuadrada}. La media y varianza de una variable aleatoria ${\chi}^{2}$ provienen directamente del Teorema 4.8. 
+
+\begin{tcolorbox}[title = Teorema 4.9]
+Si $Y$ es una variable aleatoria ji cuadrada con $v$ grados de libertad, entonces 
+
+\begin{align*}
+    \mu &= E(Y) = v & {\sigma}^{2} &= V(Y) = 2v 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Aplique el Teorema 4.8 con $\alpha = v/2$ y $\beta = 2$.
+\end{tcolorbox}
+
+Se puede demostrar que si $Y$ tiene una distribución gamma con $\alpha = n/2$ para algún entero $n$, entonces $2Y/\beta$ tiene una distribución ${\chi}^{2}$ con $n$ grados de libertad. Esto es útil ya que no es fácil encontrar tablas de probabilidad para la distribución gamma y es más fácil encontrarlas de la distribución ji cuadrada. Otro caso especial de la función de densidad gamma es cuando $\alpha = 1$, a esta se le conoce como \emph{función de densidad exponencial}. 
+
+\begin{tcolorbox}[title = Definición 4.11]
+Se dice que una variable aleatoria $Y$ tiene una \emph{distribución exponencial con parámetro} $\beta>0$ si y sólo si la función de densidad de $Y$ es 
+
+\begin{align*}
+    f(y) = \begin{cases} \frac{1}{\beta}{e}^{-y/\beta}, & 0 \leq y < \infty, \\ 0, & \text{en cualquier otro punto} \end{cases}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 4.10]
+Si $Y$ es una variable aleatoria exponencial con parámetro $\beta$, entonces
+
+\begin{align*}
+    \mu &=  E(Y) = \beta & {\sigma}^{2} &= V(Y) = {\beta}^{2}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La demostración se sigue directamente del Teorema 4.8 con $\alpha = 1$.
+\end{tcolorbox}
+
+\section{\textbf{4.7} La distribución de probabilidad beta}
+
+La función de densidad beta es una función de densidad de dos parámetros definida sobre el intervalo cerrado $0 \leq y \leq 1$. 
+
+\begin{tcolorbox}[title = Definición 4.12]
+Se dice que una variable aleatoria $Y$ tiene una \emph{distribución de probabilidad beta con parámetros} $\alpha >0$ y $\beta >0$ si y sólo si la función de densidad de $Y$ es 
+
+\begin{align*}
+    f(y) = \begin{cases}
+        \frac{{y}^{\alpha -1}{(1 - y)}^{\beta -1}}{B(\alpha, \beta)},  & 0 \leq y \leq 1 \\ 0, & \text{en cualquier otro punto,} 
+    \end{cases}
+\end{align*}
+
+donde 
+
+\begin{align*}
+    B(\alpha, \beta) = \int_{0}^{1}{{y}^{\alpha -1}{(1 - y)}^{\beta -1}dy} = \frac{\Gamma (\alpha)\Gamma (\beta)}{\Gamma(\alpha + \beta)}
+\end{align*}
+\end{tcolorbox}
+
+Observe que definir $y$ sobre el intervalo $0\leq y \leq 1$ no restringe el uso de la distribución beta. Si $c \leq y \leq d$, entonces ${y}^{*} = (y - c)/(d -c)$ define una nueva variable tal que $0 \leq {y}^{*} \leq 1$. Entonces, la función de densidad beta se puede aplicar a una variable aleatoria definida en el intervalo $c \leq y \leq d$. La función de distribución acumulativa par la variable aleatoria beta comúnmente se denomina \emph{función beta incompleta} y está denotada por 
+
+\begin{align*}
+    F(y) = \int_{0}^{y}{\frac{{t}^{\alpha -1}{(1 - t)}^{\beta -1}}{B(\alpha, \beta)}dt} = {I}_{y}(\alpha, \beta)
+\end{align*}
+
+Cuando $\alpha$ y $\beta$ son enteros positivos ${I}_{y}(\alpha,\beta)$ está relacionada con la función de probabilidad binomial. Es posible usar integración por partes para demostrar que $0 < y < 1$, y $\alpha$ y $\beta$ ambos enteros, 
+
+\begin{align*}
+    F(y) &= \int_{0}^{y}{\frac{{t}^{\alpha -1}{(1 - t)}^{\beta -1}}{B(\alpha, \beta)}dt}\\
+    &= \sum-{i=\alpha}^{n}{\binom{n}{i}{y}^{i}{(1 - y)}^{n-i}}
+\end{align*}
+
+donde $n = \alpha + \beta -1$. De esta manera se pueden buscar valores de las tablas de probabilidad de la función binomial. 
+
+\begin{tcolorbox}[title = Teorema 4.11]
+Si $Y$ es una variable aleatoria con distribución beta $\alpha > 0$ y $\beta > 0$, entonces 
+
+\begin{align*}
+    \mu &= E(Y) = \frac{\alpha}{\alpha + \beta} & {\sigma}^{2} &= V(Y) = \frac{\alpha \beta }{{(\alpha + \beta)}^{2}(\alpha + \beta + 1)}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Por definición, 
+
+\begin{align*}
+    E(Y) &= \int_{-\infty}^{\infty}{yf(y) dy} = \int_{0}^{1}{y\left[\frac{{y}^{\alpha -1}{(1 - y)}^{\beta -1}}{B(\alpha, \beta)}\right]dy}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Por definición, 
+
+\begin{align*}
+    E(Y) &= \frac{1}{B(\alpha,\beta)}\int_{0}^{1}{{y}^{\alpha}{(1 - y)}^{\beta -1}dy} \\
+    &= \frac{B(\alpha + 1, \beta)}{B(\alpha,\beta)} \quad (\text{porque $\alpha >0$ implica que $\alpha + 1>0$}) \\
+    &= \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)} \times \frac{\Gamma(\alpha + 1)\Gamma(\beta)}{\Gamma(\alpha + \beta +1)} \\
+    &= \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha)\Gamma(\beta)} \times \frac{\alpha \Gamma(\alpha )\Gamma(\beta)}{(\alpha + \beta\Gamma (\alpha + \beta)}\\
+    &= \frac{\alpha}{(\alpha + \beta)}
+\end{align*}
+
+% Varianza pendiente, necesito intentarla en papel primero 
+\end{tcolorbox}
+
+% Sección 4.8 del capítulo 4 esta medio rara y no entiendo por que esta ahi. recuerda preguntarle a Alejandro a ver que onda con esa. La incluimos o nelson mandela. 
+
+\section{\textbf{4.9} Otros valores esperados}
+
+Los momentos para variables aleatorias continuas tienen definiciones análogas a las dadas para el caso discreto. 
+
+\begin{tcolorbox}[title = Definición 4.13]
+Si $Y$ es una variable aleatoria continua, entonces el $k$-ésimo \emph{momento alededor del origen} está dado por 
+
+\begin{align*}
+    {\mu}_{k}' &= E({Y}^{k}), & k&= 1,2,\ldots
+\end{align*}
+
+El $k$-ésimo \emph{momento alrededor de la media}, o el $k$-ésimo \emph{momento central}, está dado por 
+
+\begin{align*}
+    {\mu}_{k} &= E[{(Y - \mu)}^{k}], & k&= 1,2,\ldots 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Definición 4.14]
+Si $Y$ es una variable aleatoria continua, entonces la \emph{función generadora de momento} de $Y$ está dada por 
+
+\begin{align*}
+    m(t) = E({e}^{tY})
+\end{align*}
+
+Se dice que existe la función generadora de momento si existe una constante $b > 0$ tal que $m(t)$ es finita para $|t| \leq b$.
+\end{tcolorbox}
+
+Esto es el análogo continuo del caso discreto. Se puede demostrarlo de una manera similar, si $m(t)$ existe, entonces
+
+\begin{align*}
+    E({e}^{tY}) &= \int_{-\infty}^{\infty} {{e}^{tY}f(y)dy} \\
+    &= \int_{-\infty}^{\infty}{\left(1 + ty + \frac{{t}^{2}{y}^{2}}{2!} + \frac{{t}^{3}{y}^{3}}{3!} + \cdots \right)f(y)dy} \\
+    &=\int_{-\infty}^{\infty}{f(y) dy} + t\int_{-\infty}^{\infty}{yf(y)dy} + \frac{{t}^{2}}{2!}\int_{-\infty}^{\infty}{{y}^{2}f(y)}  \\
+\end{align*}
+
+De esta manera se observa que 
+\begin{align*}
+    m(t) & = 1 + t{\mu}_{1}' + \frac{{t}^{2}}{2!}{\mu}_{2}' + \frac{{t}^{3}}{3!}{\mu}_{3}' + \cdots 
+\end{align*}
+
+Por lo tanto el Teorema 3.12 se cumple para las variables aleatorias continuas y 
+
+\begin{align*}
+    \left. \frac{{d}^{k}m(t)}{d{t}^{k}}\right\vert _{t=0} = {\mu}_{k}'
+\end{align*}
+
+Al igual que en el caso discreto para hallar la función generadora de una función de la variable aleatoria se tiene lo siguiente. 
+
+\begin{tcolorbox}[title = Teorema 4.12]
+Sea $Y$ una variable aleatoria con función de densidad $f(y)$ y $g(y)$ una función de $Y$. Entonces la función generadora de momento para $g(Y)$ es 
+
+\begin{align*}
+    E[{e}^{tg(Y)}]= \int_{-\infty}^{\infty}{{e}^{tg(y)}f(y)dy}
+\end{align*}
+\end{tcolorbox}
+
+\section{\textbf{4.10} Teorema de Tchebysheff}
+
+Como fue el caso para variables aleatorias discretas, una interpretación de $\mu$ y $\sigma$ para variables aleatorias continuas está dada por la regla empírica y el teorema de Tchebysheff. 
+
+\begin{tcolorbox}[title = Teorema 4.13]
+\textbf{Teorema de Tchebysheff} Sea $Y$ una variable aleatoria con media finita $\mu$ y varianza ${\sigma}^{2}$. Entonces, para cualquier $k >0$, 
+
+\begin{align*}
+P(|Y - \mu| < k\sigma) &\geq 1 - \frac{1}{{k}^{2}} & &\text{o} & P(|Y-\mu| &\geq k\sigma) \leq \frac{1}{{k}^{2}}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Daremos la demostración para una variable aleatoria continua. La prueba para el caso discreta se desarrolla de un modo similar. Denote con $f(y)$ la función de densidad de $Y$. Entonces, 
+
+\begin{align*}
+    V(Y) &= {\sigma}^{2} = \int_{-\infty}^{\infty}{{(y-\mu)}^{2}f(y)dy} \\
+     & = \int_{-\infty}^{\mu - k\sigma}{{(y-\mu)}^{2}f(y) dy} + \int_{\mu -k \sigma}^{\mu + k \sigma}{{(y - \mu)}^{2}f(y) dy} \\
+     & + \int_{\mu + k\sigma}^{\infty}{{(y - \mu)}^{2}f(y) dy}
+\end{align*}
+
+La segunda integral es siempre payo o igual a cero y ${(y - \mu)}^{2} \geq {k}^{2}{\sigma}^{2}$ para todos los valores de $y$ entre los límites de integración para las integrales primera y tercera; esto es, las regiones de integración están en las colas de la función de densidad e incluyen sólo valores de $y$ para los cuales ${(y - \mu)}^{2} \geq {k}^{2}{\sigma}^{2}$. Sustituya con cero la segunda integral y sustituya ${k}^{2}{\sigma}^{2}$ por ${(y - \mu)}^{2}$ en las integrales primera y tercera para obtener la desigualdad. 
+
+\begin{align*}
+    V(Y) = {\sigma}^{2} \geq  \int_{-\infty}^{\mu - k\sigma}{{k}^{2}{\sigma}^{2}f(y)dy } + \int_{\mu + k \sigma}^{\infty}{{k}^{2} {\sigma}^{2}f(y) dy} 
+\end{align*}
+
+Entonces 
+
+\begin{align*}
+    {\sigma}^{2} \geq  {k}^{2}{\sigma}^{2} \left[\int_{-\infty}^{\mu - k\sigma}{f(y) dy} + \int_{\mu + k\sigma}^{\infty}{f(y)dy}\right]
+\end{align*}
+
+o bien 
+
+\begin{align*}
+    {\sigma}^{2} &\geq {k}^{2}{\sigma}^{2}[P(Y \leq \mu - k\sigma) + P(Y \geq \mu + k \sigma)] \\
+    &= {k}^{2} {\sigma}^{2} P(|Y-\mu | \geq k \sigma)
+\end{align*}
+
+Dividiendo entre ${k}^{2}{\sigma}^{2}$, obtenemos 
+
+\begin{align*}
+    P(|Y - \mu| \geq k\sigma ) \leq \frac{1}{{k}^{2}}
+\end{align*}
+
+o bien, lo que es equivalente, 
+
+\begin{align*}
+ P( ! - \mu < k \sigma \geq 1 - \frac{1}{{k}^{2}}
+\end{align*}
+\end{tcolorbox}
+
+
+
+\section{\textbf{4.11} Valores esperados de funciones discontinuas y distribuciones mixtas de probabilidad}
+
+Los problemas en probabilidad y estadística en ocasiones incluyen funciones que son parcialmente continuas y parcialmente discretas, en una de dos manera. Una variable aleatoria $Y$ que tiene alguna de sus probabilidades en puntos discretos y el resto disperso en intervalos, se dice que tiene una \emph{distribución mezclada}. Denote con $F(y)$ una función de distribución de una variable aleatoria $Y$ que tiene una distribución mezclada. Para todos los fines prácticos, cualquier función $F(y)$ de distribución mezclada se puede escribir de manera única como 
+
+\begin{align*}
+    F(y) = {c}_{1}{F}_{1}(y) + {c}_{2}{F}_{2}(y)
+\end{align*}
+
+donde ${F}_{1}(y)$ es una función escalón de distribución, ${F}_{2}(y)$ es una función de distribución continua, ${c}_{1}$ es la probabilidad acumulada de todos los puntos discretos y ${c}_{2}= 1 - {c}_{1}$ es la probabilidad acumulada de todas las porciones continuas. 
+
+\begin{tcolorbox}[title = Definición 4.15]
+
+Hagamos que $Y$ tenga la función de distribución mezclada 
+
+\begin{align*}
+    F(y) = {c}_{1}{F}_{1}(y) + {c}_{2}{F}_{2}(y)
+\end{align*}
+
+y supongamos que ${X}_{1}$ es una variable aleatoria discreta con función de distribución ${F}_{1}(y)$ y que ${X}_{2}$ es una variable aleatoria continua con función de distribución ${F}_{2}(y)$. 
+
+Denotemos con $g(Y)$ una función de $Y$. Entonces 
+
+\begin{align*}
+    E[g(Y)] = {c}_{1}E[g({X}_{1})] + {c}_{2}E[g({X}_{2})]
+\end{align*}
+
+
+\end{tcolorbox}
+
+%Great symbol look-up site: \href{http://detexify.kirelabs.org/}{Detexify}\\
+%\href{http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf}{\LaTeX\ Mathematical Symbols}\\
+%\href{ftp://tug.ctan.org/pub/tex-archive/info/symbols/comprehensive/symbols-letter.pdf}{The Comprehensive \LaTeX\ Symbol List}\\ 
+%\href{http://mirrors.med.harvard.edu/ctan/info/lshort/english/lshort.pdf}{The Not So Short Introduction to \LaTeX\ 2$\varepsilon$}\\
+
+\end{multicols}
+
+%\SetWatermarkHorCenter{0.65\paperwidth}
+\end{document}
