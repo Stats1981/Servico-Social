@@ -1,0 +1,732 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overleaf Example: A quick guide to LaTeX
+%
+% Original Source: Dave Richeson (divisbyzero.com), Dickinson College
+% Modified By: Paul Gessler, Overleaf (overleaf.com)
+% 
+% A one-size-fits-all LaTeX cheat sheet. Kept to two pages, so it 
+% can be printed (double-sided) on one piece of paper
+% 
+% Feel free to distribute this example, but please keep the referral
+% to divisbyzero.com
+% 
+% Guidance on the use of the Overleaf logos can be found here:
+% https://www.overleaf.com/for/partners/logos 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use Overleaf: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[10pt,landscape,letterpaper]{article}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{spverbatim}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,urlcolor=olgreen]{hyperref}
+\usepackage{booktabs}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
+\setsansfont{Fira Sans}
+\usepackage{tcolorbox} 
+\setmonofont{Inconsolata}
+%\usepackage{unicode-math}
+%\setmathfont{TeX Gyre Pagella Math}
+\usepackage{microtype}
+% dirty fix for microtype
+\makeatletter
+\def\MT@is@composite#1#2\relax{%
+  \ifx\\#2\\\else
+    \expandafter\def\expandafter\MT@char\expandafter{\csname\expandafter
+                    \string\csname\MT@encoding\endcsname
+                    \MT@detokenize@n{#1}-\MT@detokenize@n{#2}\endcsname}%
+    % 3 lines added:
+    \ifx\UnicodeEncodingName\@undefined\else
+      \expandafter\expandafter\expandafter\MT@is@uni@comp\MT@char\iffontchar\else\fi\relax
+    \fi
+    \expandafter\expandafter\expandafter\MT@is@letter\MT@char\relax\relax
+    \ifnum\MT@char@ < \z@
+      \ifMT@xunicode
+        \edef\MT@char{\MT@exp@two@c\MT@strip@prefix\meaning\MT@char>\relax}%
+          \expandafter\MT@exp@two@c\expandafter\MT@is@charx\expandafter
+            \MT@char\MT@charxstring\relax\relax\relax\relax\relax
+      \fi
+    \fi
+  \fi
+}
+% new:
+\def\MT@is@uni@comp#1\iffontchar#2\else#3\fi\relax{%
+  \ifx\\#2\\\else\edef\MT@char{\iffontchar#2\fi}\fi
+}
+\makeatother
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{margin=0.4in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\sffamily\large}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\sffamily\normalsize\itshape}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\itshape}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+% -----------------------------------------------------------------------
+
+\usepackage{academicons}
+
+%\usepackage{draftwatermark,afterpage,xcolor}
+%\definecolor{olgreen}{HTML}{4f9c45}
+%\SetWatermarkText{\aiOverleaf}
+%\SetWatermarkFontSize{0.9\paperheight}
+%\SetWatermarkAngle{0}
+%\SetWatermarkColor[HTML]{EDF5EC}
+%\SetWatermarkLightness{0.95}
+%\SetWatermarkHorCenter{0.35\paperwidth}
+
+\begin{document}
+\footnotesize
+%\raggedright
+
+\begin{center}
+  {\huge\sffamily\bfseries Capítulo 3 Variables Aleatorias Discretas y sus Distribuciones de Probabilidad }  \\
+\end{center}
+\setlength{\premulticols}{0pt}
+\setlength{\postmulticols}{0pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{1.8em}
+\begin{multicols}{3}
+
+\section{Definición Básica}
+
+Como se vio en el capitulo anterior una variable aleatoria es una función de valor real definida sobre un espacio muestral. Por lo tanto, una variable aleatoria se puede usar para identificar eventos numéricos que son de interés en un experimento. Existen dos tipos de variables aleatorias, variables aleatorias discretas y continuas. En este capitulo se exploraran las discretas. 
+
+\begin{tcolorbox}[title = Definición 3.1]
+Se dice que una variable aleatoria $Y$ es \emph{discreta} si puede tomar sólo un número finito o contablemente infinito de valores distintos. 
+\end{tcolorbox}
+
+Un conjunto de elementos es contablemente infinito si los elementos del conjunto se pueden poner en correspondencia biunívoca con los enteros positivos. Se necesita la probabilidad de un evento observado para hacer inferencias acerca de una población. Los eventos de interés son con frecuencia numéricos y corresponden a valores de variables aleatorias discretas. Como ciertos tipos de variables aleatorias se presentan frecuentemente en la práctica, es útil tener a la mano la probabilidad para cada valor de una variable aleatoria. Este conjunto de probabilidades recibe el nombre de \emph{distribución de probabilidad} de la variable aleatoria discreta. Numerosos experimentos muestran características similares y general variables aleatorias con el mismo tipo de distribución de probabilidad. 
+
+\section{La distribución de probabilidad para una Variable Aleatoria Discreta}
+
+De modo notacional, usaremos una \emph{letra mayúscula} para denotar una \emph{variable aleatoria} y una \emph{letra minúscula} para denotar un \emph{valor particular} que puede tomar una variable aleatoria. Entonces la expresión $(Y = y)$ se puede leer como \emph{el conjunto de todos los puntos en $S$ a los que la variable aleatoria $Y$ asigna el valor $y$}. Con esto se llega a la siguiente definición. 
+
+\begin{tcolorbox}[title = Definición 3.2]
+La probabilidad de que $Y$ tome el valor $y$, $P(Y = y)$, se define como la \emph{suma de las probabilidades de todos los puntos muestrales} en $S$ a los que se asigna el valor $y$. A veces denotaremos $P(Y = y)$ por $p(y)$.
+\end{tcolorbox}
+
+Como $p(y)$ es una función que asigna probabilidad a cada valor $y$ de la variable aleatoria $Y$, a veces recibe el nombre de \emph{función de probabilidad} para $Y$
+
+\begin{tcolorbox}[title = Definición 3.3]
+La \emph{distribución de probabilidad} para una variable discreta $Y$ puede ser representada por una fórmula, una tabla o una gráfica que produzca $p(y) = P(Y = y)$ para toda $y$. 
+\end{tcolorbox}
+
+Nótese que $p(y)\geq 0$ para toda $y$, pero la distribución de probabilidad para una variable aleatoria dsicreta signa probabilides diferentes de cero a sólo un número contable de valores $y$ distintos. Se entiende que cualquier valor $y$ no explícitamente asignado a una posibilidad positiva es tal que $p(y) = 0$. 
+
+\begin{tcolorbox}[title = Teorema 3.1]
+Para cualquier distribución de probabilidad discreta, lo siguiente debe ser verdadero:
+\begin{enumerate}
+
+\item[1.] $0 \leq p(y) \leq 1$ para toda $y$. 
+
+\item[2.] $\sum_{y}{p(y)}=1$, donde la sumatoria es para todos los valores de $y$ con probabilidad difernete de cero. 
+\end{enumerate}
+\end{tcolorbox}
+
+\section{El valor esperado de una variable aleatoria o una función de una variable aleatoria}
+
+\begin{tcolorbox}[title = Definición 3.4]
+Sea $Y$ una variable aleatoria discreta con la función de probabilidad $p(y)$. Entonces el valor esperado de $Y$, $E(Y)$ se define como 
+\begin{align*}
+E(Y) = \displaystyle \sum_{y}{yp(y)}
+\end{align*}
+\end{tcolorbox}
+
+Para ser precisos, se dice que el valor esperado de una variable aleatoria discreta existe si la suma, como se dio antes, es absolutamente convergente, es decir, si
+\begin{align*}
+\displaystyle \sum_{y}{|y|p(y)} < \infty 
+\end{align*}
+Si $p(y)$ es una caracterización precisa de la distribución de frecuencia poblacional, entonces $E(Y) = \mu$ es la media poblacional. A la media también se le puede llamar promedio. La definición anterior se puede extender cuando se esta tratando de una función de valor real de alguna variable aleatoria. 
+
+\begin{tcolorbox}[title = Teorema 3.2]
+Sea $Y$ una variable aleatoria discreta con función de probabilidad $p(y)$ y sea $g(Y)$ una función de valor real de $Y$. Entonces, el valor esperado de $g(Y)$ está dado por
+\begin{align*}
+E\left[g(Y)\right] = \sum_{\text{toda $y$}}{g(y)p(y)}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Demostramos el resultado en el caso que la variable aleatoria $Y$ toma el número finito de valores ${y}_{1},{y}_{2},\ldots,{y}_{n}$. Como la función $g(y)$ puede no ser biunívoca, suponga que $g(Y)$ toma valores ${g}_{1},{g}_{2},\ldots,{g}_{m}$ (donde $m \leq n$). Se deduce que $g(Y)$ es una variable aleatoria tal que para $i = 1,2,\ldots,m$, 
+\begin{align*}
+P\left[g(Y) = {g}_{i}\right] = \sum_{\substack{\text{toda ${y}_{i}$} \\ \text{tal que} \\ \text{$g({y}_{i}) = {g}_{i}$}}}{p({y}_{i})} = {p}^{*}({g}_{i})
+\end{align*}
+Entonces, por la Definición 3.4, 
+\begin{align*}
+E\left[g(Y)\right] &= \sum_{i=1}^{m}{{g}_{i}{p}^{*}({g}_{i})} \\
+&=\sum_{i=1}^{m}{{g}_{i}\left\{\sum_{\substack{\text{toda ${y}_{i}$} \\ \text{tal que} \\ \text{$g({y}_{i}) = {g}_{i}$}}}{p({y}_{i})} \right\}} \\
+&=\sum_{i=1}^{m}{\left\{\sum_{\substack{\text{toda ${y}_{i}$} \\ \text{tal que} \\ \text{$g({y}_{i}) = {g}_{i}$}}}{{g}_{i}p({y}_{i})} \right\}}\\
+&= \sum_{j-1}^{n}{g({y}_{j})p({y}_{j})}
+\end{align*}
+\end{tcolorbox}
+
+El objetivo inmediato es hallar medidas numéricas descriptivas (o parámetros) para caracterizar $p(y)$. Como ya se vio $E(Y)$ proporciona la media de una población con distribución dada por $p(y)$. A continuación se obtendrá la definición de varianza y desviación estándar de una población. 
+
+\begin{tcolorbox}[title = Definición 3.5]
+Si $Y$ es una variable aleatoria con media $E(Y) = \mu$, la varianza de una variable aleatoria $Y$ se define como el valor esperado de ${(Y - \mu)}^{2}$. Esto es, 
+\begin{align*}
+V(Y) = E\left[{(Y - \mu)}^{2}\right] = {\sigma}^{2}
+\end{align*}
+La \emph{desviación estándar} de $Y$ es la raíz cuadrad positiva de $V(Y)$.
+\end{tcolorbox}
+
+A continuación se presentan tres teoremas útiles de expectativa que se deduce directamente de la teoría de sumatoria. 
+
+\begin{tcolorbox}[title = Teorema 3.3]
+Sea $Y$ una variable aleatoria discreta con función de probabilidad $p(y)$ y sea $c$ una constante. Entonces $E(c) = c$. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Considere la función $g(Y) \equiv c $. Por el Teorema 3.2, 
+\begin{align*}
+E(c) = \sum_{y}{cp(y)} = c\sum_{y}{p(y)}
+\end{align*}
+Pero $\sum_{y}{p(y)} = 1$ (Teorema 3.1) y, por tanto, $E(c) = c(1) = c$. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 3.4]
+Sea $Y$ una variable aleatoria discreta con función de probabilidad $p(y)$, $g(y)$ una función de $Y$ y $c$ una constante. Entonces
+\begin{align*}
+E[cg(Y)] = cE[g(Y)]
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Por el teorema 3.2, 
+\begin{align*}
+E[cg(Y)] = \sum_{y}{cg(y)p(y)} = c\sum_{y}{g(y)p(y)} = cE[g(Y)]
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 3.5]
+Sea $Y$ una variable aleatoria discreta con función de probabilidad $p(y)$ y sean ${g}_{1}(Y),{g}_{2}(Y),\ldots,{g}_{k}(Y)$ $k$ funciones de $Y$. Entonces
+\begin{align*}
+E\left[{g}_{1}(Y) + {g}_{2}(Y) + \cdots + {g}_{k}(Y)\right] =\\
+ E\left[{g}_{1}(Y)\right] + E\left[{g}_{2}(Y)\right] + \cdots + E\left[{g}_{k}(Y)\right]
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Demostraremos la prueba sólo para el caso $k = 2$, pero pasos análogos se cumplirán para cualquier $k$ finita. Por el Teorema 3.2, 
+\begin{align*}
+E[{g}_{1}(Y) + {g}_{2}(Y)] &= \sum_{y}{[{g}_{1}(y) + {g}_{2}(y)]p(y)} \\
+& = \sum_{y}{{g}_{1}(y)p(y)} + \sum_{y}{{g}_{2}(y)p(y)} \\
+& = E[{g}_{1}(Y)] + E[{g}_{2}(Y)]
+\end{align*}
+\end{tcolorbox}
+
+Estos últimos teoremas se pueden usar de inmediato para desarrollar un teorema útil para hallar la varianza de una variable aleatoria discreta. 
+
+\begin{tcolorbox}[title = Teorema 3.6]
+Sea $Y$ una variable aleatoria discreta con función de probabilidad $p(y)$ y media $E(y) = \mu$; entonces 
+\begin{align*}
+V(Y) = {\sigma}^{2} = E[{(Y - \mu)}^{2}] = E({Y}^{2}) - {\mu}^{2}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+\begin{align*}
+{\sigma}^{2} &= E[{(Y - \mu)}^{2}] = E({Y}^{2} - 2\mu Y + {\mu}^{2}) \\
+&= E({Y}^{2}) - E(2\mu Y) + E({\mu}^{2}) \quad \text{por el Teorema 3.5}
+\end{align*}
+Si se observa que $\mu$ es una constante y se aplican los Teoremas 3.4 y 3.3 a los términos segundo y tercero, respectivamente, tenemos 
+\begin{align*}
+{\sigma}^{2} = E({Y}^{2}) - 2\mu E(Y) + {\mu}^{2}
+\end{align*}
+Pero $\mu = E(Y)$ y por lo tanto, 
+\begin{align*}
+{\sigma}^{2} = E({Y}^{2}) - 2{\mu}^{2} + {\mu}^{2} = E({Y}^{2}) - {\mu}^{2}
+\end{align*}
+\end{tcolorbox}
+
+
+\section{La distribución de probabilidad binomial}
+
+La distribución de probabilidad más simple que existe es conocida como la distribución bernoulli. Consiste en la probabilidad de un éxito de algún evento y la probabilidad de fracaso del evento. Existen experimentos que solo consisten en la observación de una secuencia de intentos independientes, cada uno de estos intentos tiene distribución bernoulli. Cuando se observan todos los experimentos en conjunto entonces se esta tratando con un experimento binomial y se definen de la siguiente manera.  
+
+\begin{tcolorbox}[title = Definición 3.6]
+Un \emph{experimento binomial} presenta las siguientes propiedades:
+\begin{enumerate}
+
+\item[1.] Consiste en un número fijo, $n$, de pruebas idénticas. 
+
+\item[2.] Cada prueba resulta en uno de dos resultados: éxito, $S$, o fracaso, $F$.
+
+\item[3.] La probabilidad de éxito en una sola prueba es igual a algún valor $p$ y es el mismo de una prueba a la otra. La probabilidad de fracaso es igual a $q=(1-p)$. 
+
+\item[4.] Las pruebas son independientes. 
+
+\item[5.] La variable aleatoria de interés es $Y$, el número de éxitos observados durante las $n$ pruebas. 
+
+\end{enumerate}
+\end{tcolorbox}
+
+Como la variable aleatoria de interés es el número de éxitos observados entonces se puede deducir la distribución $p(y)$ de probabilidad binomial al aplicar el método de punto muestral para hallar la probabilidad de que el experimento produzca $y$ éxitos. Cada punto muestral del espacio muestral tiene $n$ pruebas, algunas son éxitos y otras son fracasos. Entonces un punto muestral típico se pudiera ver como 
+\begin{align*}
+SSSFSSFFFSFSFFFFSSSFF\ldots FFSSF
+\end{align*}
+Cada uno de los éxitos tiene la misma probabilidad de haber sucedido, esto es lo mismo para los fracasos. Entonces, considerando el caso particular de que hayan $Y=y$ éxitos esto significa que hay $n - y$ fracasos. Con esta información se puede encontrar la probabilidad de este punto muestra que consiste de $y$ éxitos y $n-y$ fracasos, como cada prueba es independiente entonces la probabilidad conjunta es el producto de las probabilidades. Lo que da lo siguiente:
+\begin{align*}
+ppppp\cdots pqqqqq\cdots qq ={p}^{y}{q}^{n-y}
+\end{align*}
+Ahora hay que considerar todos los posibles arreglos que contienen $y$ éxitos ya que cada uno de estos puntos muestrales tiene la misma probabilidad. Esta cantidad esta dada por el Teorema 2.3 y resulta en lo siguiente. 
+\begin{align*}
+\binom{n}{y} = \frac{n!}{y!(n - y)!}
+\end{align*}
+Con esta información se deduce que la distribución de probabilidad binomial es la siguiente. 
+
+\begin{tcolorbox}[title = Definición 3.7]
+Se dice que una variable aleatoria $Y$ tiene una \emph{distribución binomial } basada en $n$ pruebas con probabilidad $p$ de éxito si y sólo si
+\begin{align*}
+p(y) &= \binom{n}{y}{p}^{y}{q}^{n-y} & y &=0,1,2,\ldots,n & 0&\leq p \leq 1
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 3.7]
+Sea $Y$ una variable aleatoria binomial basada en $n$ pruebas y probabilidad $p$ de éxito. Entonces
+\begin{align*}
+\mu &= E(Y) = np & {\sigma}^{2} = V(Y) = npq 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Por las Definiciones 3.4 y 3.7 
+\begin{align*}
+E(Y) = \sum_{y}{yp(y)} = \sum_{y=0}^{n}{y\binom{n}{y}{p}^{y}{q}^{n-y}}
+\end{align*}
+Observe que el primer término de la suma es 0 y por lo tanto
+\begin{align*}
+E(Y) &= \sum_{y=1}^{n}{y\frac{n!}{(n - y)!y!}{p}^{y}{q}^{n-y}} \\
+&= \sum_{y=1}^{n}{\frac{n!}{(n-y)!(y-1)!}{p}^{y}{q}^{n-y}}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Los sumados de esta última expresión presentan un sorprendente parecido con las probabilidades binomiales. De hecho, si factorizamos $np$ en cada término de la sima y hacemos $z = y-1$, 
+\begin{align*}
+E(Y) &= np \sum_{y=1}^{n}{\frac{(n-1)!}{(n-y)!(y-1)!}{p}^{y-1}{q}^{n-y}} \\
+&= np\sum_{z=0}^{n-1}{\frac{(n-1)!}{(n-1-z)!z!}{p}^{z}{q}^{n-1-z}} \\
+&= np\sum_{z=0}^{n-1}{\binom{n-1}{z}{p}^{z}{q}^{n-1-z}} 
+\end{align*}
+Observe que $p(z)=\binom{n-1}{z}{p}^{z}{q}^{n-1-z}$ es la función de probabilidad binomial basada en $(n-1)$ pruebas. Así, $\displaystyle \sum_{z}{p(z)}=1$ y se deduce que
+\begin{align*}
+\mu = E(Y) = np
+\end{align*}
+Del Teorema 3.6 sabemos que ${\sigma}^{2}=V(Y)=E({Y}^{2}) - {\mu}^{2}$. Entonces, ${\sigma}^{2}$ se puede calcular si hallamos $E({Y}^{2})$. Hallar $E({Y}^{2})$ directamente es difícil porque 
+\begin{align*}
+E({Y}^{2}) &= \sum_{y=0}^{n}{{y}^{2}p(y)} = \sum_{y=0}^{n}{{y}^{2}\binom{n}{y}{p}^{y}{q}^{n-y}} \\
+&= \sum_{y=0}^{n}{{y}^{2}\frac{n!}{y!(n-y)!}{p}^{y}{q}^{n-y}}
+\end{align*}
+y la cantidad ${y}^{2}$ no aparece como factor de $y!$. Sin embargo, observe que
+\begin{align*}
+E[Y(Y-1)]=E({Y}^{2}-Y)=E({Y}^{2})-E(Y)
+\end{align*}
+Por lo tanto 
+\begin{align*}
+E({Y}^{2}) = E[Y(Y -1)] + E(Y) = E[Y(Y-1)] + \mu
+\end{align*}
+En este caso, $E[Y(Y-1)] = \sum_{y=0}^{n}{y(y-1)\frac{n!}{y!(n-y)!}{p}^{y}{q}^{n-y}}$
+Los términos primero y segundo de esta suma son iguales a cero (cuando $y = 0$ y $y=1$. Entonces 
+\begin{align*}
+E[Y(Y-1)] = \sum_{y=2}^{n}{\frac{n!}{(y-2)!(n-y)!}{p}^{y}{q}^{n-y}}
+\end{align*}
+(Observe la cancelación que llevó a este último resultado. La anticipación de esta cancelación es lo que en realidad motivó la consideración de $E[Y(Y-1)]$.) De nuevo,  los sumados de la última expresión se asemejan mucho a probabilidades binomiales. Factorice $n(n-1){p}^{2}$ en cada término de la suma y sea $z = y -2$ para obtener
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+\begin{align*}
+E[Y(Y-1)] &= n(n-1){p}^{2}\sum_{y=2}^{n}{\frac{(n-2)!}{(y-2)!(n-y)!}{p}^{y-2}{q}^{n-y}} \\
+&= n(n-1){p}^{2}\sum_{z=0}^{n-2}{\frac{(n-2)!}{z!(n-2-z)!}{p}^{z}{q}^{n-2-z}} \\
+&= n(n-1){p}^{2}\sum_{z=0}^{n-2}{\binom{n-2}{z}{p}^{z}{q}^{n-2-z}} \\
+\end{align*}
+De nuevo observe que $p(z)=\binom{n-2}{z}{p}^{z}{q}^{n-2-z}$ es la función de probabilidad binomial basada en $(n-2)$ pruebas. Así $\displaystyle \sum_{z=0}^{n-2}{p(z)}=1$ (de nuevo usando el dispositivo ilustrado en la obtención de la media) y
+\begin{align*}
+E[Y(Y-1)] = n(n-1){p}^{2}
+\end{align*}
+Entonces, 
+\begin{align*}
+E({Y}^{2}) = E[Y(Y-1)] + \mu = n(n-1){p}^{2} + np
+\end{align*}
+y 
+\begin{align*}
+{\sigma}^{2} = E({Y}^{2}) -{\mu}^{2} &= n(n-1){p}^{2} - {n}^{2}{p}^{2}\\
+&= np[(n-1)p+1-np] \\
+&=np(1-p)=npq
+\end{align*}
+\end{tcolorbox}
+
+Este teorema ilustra el uso de el hecho de que $\sum{p(y)}=1$ si $p(y)$ es una función de probabilidad válida. Esta técnica se ocupara para otras distribuciones de probabilidad vistos en este capitulo.
+
+\section{La distribución de probabilidad geométrica}
+
+La variable aleatoria con distribución de probabilidad geométrica está asociada con un experimento que comparte algunas características de un experimento binomial. Al igual que un experimento binomial el experimento también tiene pruebas idénticas e independientes. Cada una de estas pruebas solo tiene dos resultados, éxito o fracaso. La diferencia entre estos dos experimentos es que en el geométrico la variable aleatoria $Y$ es el número de pruebas en que ocurre el primer éxito. Esto significa que si el primer éxito ocurre en $y$ intentos entonces hubo $y-1$ fracasos. Como solo hay un punto muestral en que esto ocurre no hay que considerar los demás casos en los que solo ocurre un éxito en $y$ intentos. Con esto se obtiene la siguiente definición. 
+
+\begin{tcolorbox}[title = Definición 3.8]
+Se dice que una variable aleatoria $Y$ tiene una \emph{distribución de probabilidad geométrica} si y solo si
+\begin{align*}
+p(y) &= {q}^{y-1}p & y &= 1,2,3,\ldots, & 0\leq &p\leq 1
+\end{align*}
+\end{tcolorbox}
+
+Al igual que la distribución anterior es importante conocer la media y varianza de esta distribución, la cual se observa en el siguiente teorema. 
+
+\begin{tcolorbox}[title = Teorema 3.8]
+Si $Y$ es una variable aleatoria con una distribución geométrica, 
+\begin{align*}
+\mu &= E(Y) = \frac{1}{p} & {\sigma}^{2} &= V(Y) = \frac{1-p}{{p}^{2}} 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+
+\begin{align*}
+E(Y) = \sum_{y=1}^{\infty}{y{q}^{y-1}p} =p\sum_{y=1}^{\infty}{y{q}^{y-1}} 
+\end{align*}
+
+Esta serie podría parecer dificil de sumarse directamente. En realidad, se puede sumar con facilidad si tomamos en cuenta que, para $y\geq 1$, 
+
+\begin{align*}
+\frac{d}{dq}({q}^{y}) = y {q}^{y-1}
+\end{align*}
+
+y por lo tanto,
+
+\begin{align*}
+\frac{d}{dq}\left(\sum_{y=1}^{\infty}{{q}^{y}}\right) = \sum_{y=1}^{\infty}{y{q}^{y-1}}
+\end{align*}
+
+(El intercambio de derivada y suma aquí se puede justificar.) Sustituyendo, obtenemos
+
+\begin{align*}
+E(Y) = p\sum_{y=1}^{\infty}{y{q}^{y-1}} = p\frac{d}{dq}\left(\sum_{y=1}^{\infty}{{q}^{y}}\right)
+\end{align*}
+
+La última suma es la serie geométrica, $q + {q}^{2} +{q}^{3}+\cdots,$ que es igual a $q/(1-q)$(vea el Apéndice A1.11). Por lo tanto, 
+
+\begin{align*}
+E(Y) = p\frac{d}{dq}\left(\frac{q}{1-q}\right) = p \left[\frac{1}{{(1-q)}^{2}}\right] = \frac{p}{{p}^{2}}=\frac{1}{p}
+\end{align*}
+
+Para resumir, nuestro método es expresar una serie que no se puede sumar directamente como la derivada de una serie para la cual la suma se puede obtener con facilidad. Una vez que evaluemos la serie más fácilmente manejable, derivamos para completar el proceso. 
+
+La derivación de la varianza se deja como Ejercicio 3.85. % Aquí puedo escribir la demostración 
+\end{tcolorbox}
+
+\section{La distribución de probabilidad binomial negativa}
+
+Esta distribución al igual que las ultimas dos distribuciones utiliza intentos independientes e idénticos que solo tienen dos resultados, fracasos o éxitos. La variable aleatoria que nos interesa en esta distribución es parecida a la variable aleatoria vista en la distribución geométrica, solo que vez del número de intentos para el primer éxito ahora nos interesa el número de intentos para obtener $r$ éxitos. Esto significa que habrá $r$ éxitos en un punto muestral y $y-r$ fracasos, ahora hay que considerar todos los puntos muestrales que tienen estas mismas cantidades de fracasos y éxitos. Esto se hace de la misma manera que en la distribución binomial. Por lo tanto se tiene la siguiente definición. 
+
+\begin{tcolorbox}[title = Definición 3.9]
+Se dice qeu una variable aleatoria $Y$ tiene una \emph{distribución de probabilidad binomial negativa} si y sólo si
+
+\begin{align*}
+p(y) &= \binom{y-1}{r-1}{p}^{r}{q}^{y-r} & y &= r,r+1,r+2,\ldots, & 0 &\leq p \leq 1
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 3.9]
+Si $Y$ es una variable aleatoria con una distribución binomial negativa, 
+\begin{align*}
+\mu &= E(Y) = \frac{r}{p} & {\sigma}^{2} &= V(Y) = \frac{r(1-p)}{{p}^{2}}
+\end{align*}
+\end{tcolorbox}
+
+
+\section{La distribución de probabilidad hipergeométrica}
+
+Suponga que una población contiene un número finito $N$ de elementos, ahora suponga que se toma una muestra considerable de $n$ elementos. Ahora considere que $r$ elementos podrían ser rojos y $b=N-r$ negros.  Si la muestra de $n$ elementos es seleccionada al azar entonces la variable aleatoria de interés es el número de elementos rojos en la muestra. Esta variable tiene una \emph{distribución de probabilidad hipergeométrica}. La distribución de probabilidad se puede obtener de manera similar al de la distribución binomial. 
+
+\begin{tcolorbox}[title = Definición 3.10]
+Se dice que una variable aleatoria $Y$ tiene una \emph{distribución de probabilidad hipergeométrica} si y sólo si 
+
+\begin{align*}
+p(y) = \frac{\binom{r}{y}\binom{N-r}{n-y}}{\binom{N}{n}}
+\end{align*}
+
+donde $y$ es un entero $0,1,2,\ldots,n$, sujero a las restricciones $y \leq r$ y $n-y \leq N-r$. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 3.10]
+Si $Y$ es una variable aleatoria con distribución hipergoemétrica, 
+
+\begin{align*}
+\mu &= E(Y) = \frac{nr}{N} & {\sigma}^{2} &= V(Y) = n\left(\frac{r}{N}\right) \left(\frac{N-r}{N}\right)\left(\frac{N-n}{N-1}\right)
+\end{align*}
+\end{tcolorbox}
+
+% Aqui puedo agregar lo del resultado de su parecido a la distribución binomial
+
+\section{La distribución de probabilidad de Poisson}
+
+La distribución Poisson se le conoce como una distribución de conteos. La variable aleatoria de esta distribución mide la cantidad de éxitos de un evento en un periodo particular. Esta distribución se asemeja a la distribución binomial. Esto se puede demostrar de la siguiente manera, sea $\lambda = np$ y tomando el límite de la probabilidad binomial $p(y)=\binom{n}{y}{p}^{y}{(1-p)}^{n-y}$ cuando $n\rightarrow \infty$, tenemos 
+
+\begin{align*}
+\lim_{n \rightarrow \infty} {\binom{n}{y}{p}^{y}{(1-p)}^{n-y}} &= \lim_{n \rightarrow \infty} {\frac{n(n-1)\cdots (n-y+1)}{y!}{\left(\frac{\lambda}{n}\right)}^{y}} \\
+&{{\left(1 - \frac{\lambda}{n}\right)}^{n-y}} \\
+&= \lim_{n \rightarrow \infty} {\frac{{\lambda}^{y}}{y!}{\left(1-\frac{\lambda}{n}\right)}^{n}\frac{n(n-1)\cdots (n-y+1)}{{n}^{y}}}\\
+&{{\left(1-\frac{\lambda}{n}\right)}^{-y}} \\
+&=\frac{{\lambda}^{y}}{y!}\lim_{n \rightarrow \infty}{{\left(1 - \frac{\lambda}{n}\right)}^{n}{\left(1 - \frac{\lambda}{n}\right)}^{-y}\left(1-\frac{1}{n}\right)} \\
+&\times \left(1-\frac{2}{n}\right)\times \cdots \times \left(1-\frac{y-1}{n}\right) 
+\end{align*}
+
+Si observamos que $\displaystyle \lim_{n \rightarrow \infty}{{\left(1- \frac{\lambda}{n}\right)}^{n}} = {e}^{-\lambda}$ y todos los otros términos a la derecha del límite tienen un límite de 1, obtenemos 
+\begin{align*}
+p(y) = \frac{{\lambda}^{y}}{y!}{e}^{-\lambda}
+\end{align*}
+
+Esto nos dice que la probabilidad binomial converge a la de Poisson. Con esto se llega a la siguiente definición. 
+
+\begin{tcolorbox}[title = Definición 3.11]
+Se dice que una variable aleatoria $Y$ tiene \emph{distribución de probabilidad de Poisson} si y sólo si 
+
+\begin{align*}
+p(y) &= \frac{{\lambda}^{y}}{y!}{e}^{-\lambda} & y &= 0,1,2,\ldots & \lambda &>0
+\end{align*}
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 3.11]
+Si $Y$ es una variable aleatoria que posee una distribucón de Poisson con parámetro $\lambda$, entonces 
+
+\begin{align*}
+\mu &= E(Y) = \lambda & {\sigma}^{2} &= V(Y) = \lambda 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Distribución}]
+Por definición, 
+
+\begin{align*}
+E(Y) = \sum_{y}{yp(y)} = \sum_{y=0}^{\infty}{y\frac{{\lambda}^{y}{e}^{-\lambda}}{y!}}
+\end{align*}
+
+Observe que el primer término de esta suma es igual a 0 (cuando $y=0$) y por lo tanto,
+
+\begin{align*}
+E(Y) = \sum_{y=0}^{\infty}{y\frac{{\lambda}^{y}{e}^{-\lambda}}{y!}} = \sum_{y=1}^{\infty}{\frac{{\lambda}^{y}{e}^{-\lambda}}{(y-1)!}}
+\end{align*}
+Así como está, esta cantidad no es igual a la suma de los valores de una funicón de probabilidad $p(y)$ para todos los valores de $y$, pero podemos cambiarla a la forma apropiada al factorizar $\lambda$ de la expresión y haciendo $z = y -1$. Entonces los límites de sumatoria se convierten en $z = 0$ (cuando $y=1$) y $z = \infty$ (cuando $y= \infty$), y 
+
+\begin{align*}
+E(Y) = \lambda \sum_{y=1}^{\infty}{\frac{{\lambda}^{y-1}{e}^{-\lambda}}{(y-1)!}} = \lambda \sum_{z=0}^{\infty}{\frac{{\lambda}^{z}{e}^{-\lambda}}{z!}}
+\end{align*}
+
+Observe que $p(z) = {\lambda}^{z}{e}^{-\lambda}/z!$ es la función de probabilidad par una variable aleatoria de Poisson, y $\displaystyle \sum_{z=0}^{\infty}{p(z)}=1$. Por lo tanto $E(Y) = \lambda$. Entonces, la media de una variable aleatoria de Poisson es el parámetro individual $\lambda$ que aparece en la expresión para la función de probabilidad de Poisson. 
+\end{tcolorbox}
+
+
+\section{Momentos y funciones generadoras de momento}
+
+En ocasiones es difícil encontrar la media y varianza de una variable aleatoria. Estas medidas son importantes para cualquier distribución de probabilidad ya que en algunas ocasiones tienen el mismo valor. A continuación consideramos un conjunto de medidas descriptivas numéricas que en ciertas condiciones determinan $p(y)$ de manera única.  
+
+\begin{tcolorbox}[title = Definición 3.12]
+El $k$-ésimo \emph{momento de una variable aleatoria $Y$ tomada alrededor del origen} se define como $E({Y}^{k})$ y se denota con ${\mu}_{k}'$ 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Definición 3.13]
+El $k$-ésimo \emph{momento de una variable aleatoria $Y$ tomado alrededor de su media} o el $k$-ésimo \emph{momento central} de $Y$, se define como $E[{(Y-\mu)}^{k}]$ y está denotado por ${\mu}_{k}$. 
+\end{tcolorbox}
+
+Un uso importante de los momentos es para calcular la distribución de probabilidad de una variable aleatoria. Por lo tanto los momentos ${\mu}_{k}'$, donde $k=1,2,3,\ldots,$ son principalmente de valor teórica para $k>3$. 
+
+\begin{tcolorbox}[title = Definición 3.14]
+La \emph{función generadora de momento $m(t)$ para una variable aleatoria} $Y$ se define como $m(t)=E({e}^{tY})$. Decimos que una función generadora de moemento para $Y$ existe si existe una constante positiva $b$ tal que $m(t)$ es finita para $|t|\leq b$. 
+\end{tcolorbox}
+
+¿Por qué $E({e}^{tY})$ recibe el nombre de \emph{función generadora de momento para $Y$}? De una expansión de serie para ${e}^{tY}$ se tiene lo siguiente. 
+
+\begin{align*}
+{e}^{tY} = 1 + ty + \frac{{(ty)}^{2}}{2!} + \frac{{(ty)}^{3}}{3!} + \frac{{(ty)}^{4}}{4!} + \cdots
+\end{align*}
+Entonces suponiendo que ${\mu}_{k}'$ es finita para $k = 1,2,3,\ldots$, tenemos 
+
+\begin{align*}
+E({e}^{tY}) &= \sum_{y}{{e}^{tY}p(y)} \\
+&= \sum_{y}{\left[1 + ty + \frac{{(ty)}^{2}}{2!} + \frac{{(ty)}^{3}}{3!} + \frac{{(ty)}^{4}}{4!} + \cdots\right]p(y)} \\
+&= \sum_{y}{p(y)} + t\sum_{y}{yp(y)} + \frac{{t}^2}{2!}\sum_{y}{{y}^{2}p(y)} + \cdots \\
+&= 1 + t{\mu}_{1}'+ \frac{{t}^2}{2!}{\mu}_{2}' + \frac{{t}^3}{3!}{\mu}_{3}' + \cdots 
+\end{align*}
+
+Entonces, $E({e}^{tY})$ es una función de todos los momentos ${\mu}_{k}'$ alrededor del origen, para $k = 1, 2,3,\ldots$. En particular, ${\mu}_{k}'$ es el coeficiente de ${t}^{k}/k!$ en la expansión de serie de $m(t)$. La función generadora de momentos posee dos aplicaciones importantes, la primera esta dada por el siguiente teorema. 
+
+\begin{tcolorbox}[title = Teorema 3.12]
+Si $m(t)$ existe, entonces para cualquier entero positivo $k$, 
+
+\begin{align*}
+\left.\frac{{d}^{k}m(t)}{d{t}^{k}}\right\vert_{t=0} = {m}^{(k)}(0) = {\mu}_{k}'(0) = {\mu}_{k}'
+\end{align*}
+En otras palabras, si el estudiante encuentra la $k$-ésima derivada de $m(t)$ con respecto a $t$ y luego hace $t=0$, el resultado será ${mu}_{k}'$. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+$\frac{{d}^{k}m(t)}{d{t}^{k}}$, o ${m}^{(k)}(t)$, es la $k$-ésima derivada de $m(t)$ con respecto a $t$. Como 
+
+\begin{align*}
+m(t) = E({e}^{tY}) = 1 + t{\mu}_{1}'+ \frac{{t}^2}{2!}{\mu}_{2}' + \frac{{t}^3}{3!}{\mu}_{3}' + \cdots 
+\end{align*}
+
+se deduce que 
+
+\begin{align*}
+{m}^{(1)}(t) &= {\mu}_{1}' + \frac{2t}{2!}{\mu}_{2}' + \frac{3{t}^{2}}{3!}{\mu}_{3}' + \cdots \\
+{m}^{(2)}(t) &= {\mu}_{2}' + \frac{2t}{2!}{\mu}_{3}' + \frac{3{t}^{2}}{3!}{\mu}_{4}' + \cdots
+\end{align*}
+
+y en general, 
+
+\begin{align*}
+{m}^{(k)}(t) &= {\mu}_{k}' + \frac{2t}{2!}{\mu}_{k+1}' + \frac{3{t}^{2}}{3!}{\mu}_{k+2}' + \cdots
+\end{align*}
+
+Si hacemos $t=0$ en cada una de las derivadas anteriores, obtenemos 
+
+\begin{align*}
+{m}^{(1)}(0) &= {\mu}_{1}' & {m}^{(2)}(0) &= {\mu}_{2}'
+\end{align*}
+
+y en general, 
+
+\begin{align*}
+{m}^{(k)}(0) &= {\mu}_{k}'
+\end{align*}
+
+Estas operación implican intercambiar derivadas y sumas infinitas, que se pueden justificar si existe $m(t)$.
+\end{tcolorbox}
+
+La segunda aplicación de una función generadora de momento es demostrar que una variable aleatoria posee una distribución de probabilidad particular $p(y)$. Si $m(t)$
+ existe para una distribución de probabilidad $p(y)$, es única. Esto significa que si dos variables aleatorias tienen la misma función generadora de momentos entonces deben tener la misma distribución de probabilidad. 
+
+ \section{Funciones generadoras de probabilidad}
+
+ Una clase importante de variables aleartorias discrectas es aquella en la que $Y$ representa una cantidad $y$, en consecuencia toma valores enteros: $Y = 0,1,2,\ldots$. Las variables aleatorias binomiales, geométricas, hipergeométricas y de Poisson caen todas en esta clase. Un procedimiento matemático útil para hallar las distribuciones de probabilidad y otras propiedades de variables aleatorias de valor entero es la función generadora de probabilidad. 
+
+ \begin{tcolorbox}[title = Definición 3.15]
+Sea $Y$ una variable aleatoria de valor entero para la cual $P(Y = i) = {p}_{i}$, donde$i = 0,1,2,\ldots$ La \emph{función generadora de probabilidad} $P(t)$ para $Y$ se define como 
+
+\begin{align*}
+P(t) = E({t}^{Y}) = {p}_{0} + {p}_{1}t + {p}_{2}{t}^{2} + \cdots = \sum_{i=0}^{\infty}{{p}_{i}{t}^{i}}
+\end{align*}
+
+para todos los valores de $t$ tales que $P(t)$ sea finita. 
+\end{tcolorbox}
+
+ \begin{tcolorbox}[title = Definición 3.16]
+El $k$-ésimo \emph{momento factorial} para una variable aleatoria $Y$ se define como 
+
+\begin{align*}
+{\mu}_{[k]} = E[Y(Y-1)(Y-2)\cdots (Y-k+1)]
+\end{align*}
+
+donde $k$ es un entero positivo. 
+\end{tcolorbox}
+
+ \begin{tcolorbox}[title = Teorema 3.13]
+Si $P(t)$ es la función generadora de probabilidad para una variable aleatoria de valor entero, $Y$, entonces el $k$-ésimo momento factorial de $Y$ está dado por 
+
+\begin{align*}
+\left.\frac{{d}^{k}P(t)}{d{t}^{k}}\right\vert_{t=1} = {P}^{(k)}(1) = {\mu}_{[k]}
+\end{align*}
+\end{tcolorbox}
+
+ \begin{tcolorbox}[title = \textbf{Demostración}]
+Como 
+
+\begin{align*}
+P(t) = {p}_{0} + {p}_{1}t + {p}_{2}{t}^{2} + {p}_{3}{t}^{3} + {p}_{4}{t}^{4} + \cdots 
+\end{align*}
+
+se deduce que 
+
+\begin{align*}
+{P}^{(1)}(t) &= \frac{dP(t)}{dt} = {p}_{1} + 2{p}_{2}t + 3{p}_{3}{t}^{2} + 4{p}_{4}{t}^{3} + \cdots \\
+{P}^{(2)}(t) &= \frac{{d}^{2}P(t)}{d{t}^{2}} = (2)(1){p}_{2} + (3)(2){p}_{3}t + (4)(3){p}_{4}{t}^{2} + \cdots
+\end{align*}
+
+y en general, 
+
+\begin{align*}
+{P}^{(k)}(t) &= \frac{{d}^{k}P(t)}{d{t}^{k}} \\
+&= \sum_{y = k}^{\infty}{y(y-1)(y-2)\cdots (y-k+1)p(y){t}^{y-k}} \\
+\end{align*}
+
+Haciendo $t=1$ en cada una de estas derivadas, obtenemos 
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+
+\begin{align*}
+{P}^{(1)}(1) &= {p}_{1} + 2{p}_{2} + 3{p}_{3} + 4{p}_{4} + \cdots = {mu}_{[1]} = E(Y) \\
+{P}^{(2)}(1) &= (2)(1){p}_{2} + (3)(2){p}_{3} + (4)(3){p}_{4} + \cdots = {mu}_{[2]} \\
+&= E[Y(Y-1)] \\
+\end{align*}
+
+y en general, 
+
+\begin{align*}
+{P}^{(k)}(1) &= \sum_{y=k}^{\infty}{y(y-1)(y-2)\cdots (y-k+1)p(y)} \\
+&= E[Y(Y-1)(Y-2)\cdots(Y-k+1)] = {\mu}_{[k]}
+\end{align*}
+
+\end{tcolorbox}
+
+\section{Teorema de Tchebysheff}
+
+\begin{tcolorbox}[title = Teorema 3.14]
+
+\textbf{Teorema de Tchebysheff} Sea $Y$ una variable aleatoria con media $\mu$ y varianza finita ${\sigma}^{2}$. Entonces, para cualquier constante $k >0$, 
+
+\begin{align*}
+P(|Y - \mu| < k\sigma) &\geq 1 - \frac{1}{{k}^{2}} & &\text{o} & P(|Y-\mu| &\geq k\sigma) \leq \frac{1}{{k}^{2}}
+\end{align*}
+
+\end{tcolorbox}
+
+Deben señalarse dos aspectos importantes de este resultado. Primero, el resultado se aplica a \emph{cualquier} distribución de probabilidad. En segundo término, los resultados del teorema son muy conservadores en el sentido de que la probabilidad real de que $Y$ esté en el intervalo $\mu \pm k\sigma$ por lo general excede del límite inferior para la probabilidad, $1 - \frac{1}{{k}^{2}}$, por una cantidad considerable. No obstante, para cualquier $k>1$, es posible construir una distribución de probabilidad tal que, para esa $k$, el límite provisto por el teorema se alcance en realidad. 
+
+
+
+%Great symbol look-up site: \href{http://detexify.kirelabs.org/}{Detexify}\\
+%\href{http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf}{\LaTeX\ Mathematical Symbols}\\
+%\href{ftp://tug.ctan.org/pub/tex-archive/info/symbols/comprehensive/symbols-letter.pdf}{The Comprehensive \LaTeX\ Symbol List}\\ 
+%\href{http://mirrors.med.harvard.edu/ctan/info/lshort/english/lshort.pdf}{The Not So Short Introduction to \LaTeX\ 2$\varepsilon$}\\
+
+\end{multicols}
+
+%\SetWatermarkHorCenter{0.65\paperwidth}
+\end{document}
