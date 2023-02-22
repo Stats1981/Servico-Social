@@ -1,0 +1,556 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overleaf Example: A quick guide to LaTeX
+%
+% Original Source: Dave Richeson (divisbyzero.com), Dickinson College
+% Modified By: Paul Gessler, Overleaf (overleaf.com)
+% 
+% A one-size-fits-all LaTeX cheat sheet. Kept to two pages, so it 
+% can be printed (double-sided) on one piece of paper
+% 
+% Feel free to distribute this example, but please keep the referral
+% to divisbyzero.com
+% 
+% Guidance on the use of the Overleaf logos can be found here:
+% https://www.overleaf.com/for/partners/logos 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use Overleaf: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+% If you're new to LaTeX, the wikibook is a great place to start:
+% http://en.wikibooks.org/wiki/LaTeX
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[10pt,landscape,letterpaper]{article}
+\usepackage{amssymb,amsmath,amsthm,amsfonts}
+\usepackage{multicol,multirow}
+\usepackage{spverbatim}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage[colorlinks=true,urlcolor=olgreen]{hyperref}
+\usepackage{booktabs}
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{TeX Gyre Pagella}
+\setsansfont{Fira Sans}
+\usepackage{tcolorbox} 
+\setmonofont{Inconsolata}
+%\usepackage{unicode-math}
+%\setmathfont{TeX Gyre Pagella Math}
+\usepackage{microtype}
+% dirty fix for microtype
+\makeatletter
+\def\MT@is@composite#1#2\relax{%
+  \ifx\\#2\\\else
+    \expandafter\def\expandafter\MT@char\expandafter{\csname\expandafter
+                    \string\csname\MT@encoding\endcsname
+                    \MT@detokenize@n{#1}-\MT@detokenize@n{#2}\endcsname}%
+    % 3 lines added:
+    \ifx\UnicodeEncodingName\@undefined\else
+      \expandafter\expandafter\expandafter\MT@is@uni@comp\MT@char\iffontchar\else\fi\relax
+    \fi
+    \expandafter\expandafter\expandafter\MT@is@letter\MT@char\relax\relax
+    \ifnum\MT@char@ < \z@
+      \ifMT@xunicode
+        \edef\MT@char{\MT@exp@two@c\MT@strip@prefix\meaning\MT@char>\relax}%
+          \expandafter\MT@exp@two@c\expandafter\MT@is@charx\expandafter
+            \MT@char\MT@charxstring\relax\relax\relax\relax\relax
+      \fi
+    \fi
+  \fi
+}
+% new:
+\def\MT@is@uni@comp#1\iffontchar#2\else#3\fi\relax{%
+  \ifx\\#2\\\else\edef\MT@char{\iffontchar#2\fi}\fi
+}
+\makeatother
+
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+    { \geometry{margin=0.4in} }
+	{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+		{\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+	}
+\pagestyle{empty}
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%x
+                                {\sffamily\large}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+                                {-1explus -.5ex minus -.2ex}%
+                                {0.5ex plus .2ex}%
+                                {\sffamily\normalsize\itshape}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+                                {-1ex plus -.5ex minus -.2ex}%
+                                {1ex plus .2ex}%
+                                {\normalfont\small\itshape}}
+\makeatother
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+% -----------------------------------------------------------------------
+
+\usepackage{academicons}
+
+%\usepackage{draftwatermark,afterpage,xcolor}
+%\definecolor{olgreen}{HTML}{4f9c45}
+%\SetWatermarkText{\aiOverleaf}
+%\SetWatermarkFontSize{0.9\paperheight}
+%\SetWatermarkAngle{0}
+%\SetWatermarkColor[HTML]{EDF5EC}
+%\SetWatermarkLightness{0.95}
+%\SetWatermarkHorCenter{0.35\paperwidth}
+
+\begin{document}
+\footnotesize
+%\raggedright
+
+\begin{center}
+  {\huge\sffamily\bfseries Capítulo 2 Probabilidad}  \\
+\end{center}
+\setlength{\premulticols}{0pt}
+\setlength{\postmulticols}{0pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{1.8em}
+\begin{multicols}{3}
+
+\section{Probabilidad e Infernecia}
+
+La probabilidad en ocasiones es difícil de definir. En un ambiente cotidiano se puede decir que es una medida de la creencia de que un evento futuro pueda ocurrir, sin embargo esta definición es vaga y difícil de comprender. Es necesario establecer un concepto firme para trabajar con mecanismos físicos, biológicos o sociales que generan observaciones que no se pueden predecir con certeza. No hay manera de predecir estos eventos con exactitud pero la frecuencia relativa con la que ocurren en una larga serie de intentos es a veces sorprendentemente estable. Los eventos que poseen esta propiedad reciben el nombre de eventos aleatorios o estocásticos. En el contexto de este proyecto se estará trabajando con esta definición de probabilidad.
+
+Al usar esta definición de probabilidad se pueden hacer inferencias acerca de eventos particulares. Un ejemplo sencillo es el hecho de tirar un dado, por experiencia propia se puede esperar que el dado caiga en cada una de sus caras con una frecuencia relativa de $1/6$. Esto sucede si el dado es un dado justo y sin alguna modificación que altere este resultado. Por lo tanto si se tiene una hipótesis inicial acerca del dado y al tirar diez veces el dado da como resultado solo 1s entonces se puede inferir que el dado no es un dado justo. No es necesario calcular la probabilidad de que esto suceda en diez tiros solo con la intuición de que este evento sería muy improbable. 
+
+\section{Un Repaso en Notación de Conjuntos}
+
+Usaremos letras mayúsculas $A,B,C,\ldots$ para denotar conjuntos de puntos. Si los elementos del conjunto $A$ son ${a}_{1},{a}_{2}$ y ${a}_{3}$ se escribirá de la siguiente manera: $A = \left\{{a}_{1},{a}_{2},{a}_{3}\right\}$. 
+
+Denotaremos con $S$ el conjunto de todos los elementos en consideración, en otras palabras $S$ es el conjunto universal. De manera opuesta $\varnothing$ se usara para denotar el conjunto sin elementos o conjunto vació. A continuación se mostraran notación de conjuntos mediante el uso de diagramas de venn. Para dos conjuntos cualesquiera $A$ y $B$, diremos que $A$ es un subconjunto de $B$ (denotado $A\subset B$) si todo punto en $A$ también esta en $B$ como se muestran en la siguiente figura. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_1.png} \hfill
+}
+
+De esta manera se puede establecer que el conjunto vació es un subconjunto de todo conjunto. Sean $A$ y $B$ dos conjuntos cualesquiera, la unión de $A$ y $B$ denotada por $A \cup B$, es el conjunto de todos los puntos en $A$ o $B$ o en ambos. En la siguiente figura se muestra el diagrama de venn correspondiente. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_2.png} \hfill
+}
+
+El área sombreada representa $A \cup B$. La intersección de $A$ y $B$, denotada por $A \cap B$ o por $AB$, es el conjunto de todos los puntos en $A$ y $B$. En la siguiente figura se muestra el diagrama de venn correspondiente. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_3.png} \hfill
+}
+
+El área sombreada representa $A \cap B$. Sea $A$ un subconjunto de $S$, entonces el complemento de $A$ denotado por $\overline{A}$, es el conjunto de puntos que están en $S$ pero no en $A$. En la siguiente figura se muestra el diagrama de venn correspondiente. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_4.png} \hfill
+}
+
+El área sombreada representa $\overline{A}$. Sean $A$ y $B$ dos conjuntos cualesquiera, se dice que son disjuntos o mutuamente excluyentes, si $A \cup B = \varnothing$. En otras palabras no tienen puntos en común. Como se observa en la siguiente figura. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_5.png} \hfill
+}
+
+En este caso no hay área sombreada por que no comparten puntos. Además de estas notaciones es necesario conocer las leyes de distribución dadas por 
+\begin{align*}
+A \cap (B \cup C) &= (A \cap B) \cup (A \cap C) \\
+A \cup (B \cap C) &= (A \cup B) \cap (A \cup C) \\
+\end{align*}
+y las leyes de \emph{DeMorgan}:
+\begin{align*}
+\overline{(A \cap B)} & = \overline{A} \cup \overline{B} & \overline{(A \cup B)} & = \overline{A} \cap \overline{B}
+\end{align*}
+
+\section{Modelo Probabilístico para un experimento}
+
+Antes de ver que es un modelo probabilístico es necesario definir que es un experimento. 
+
+\begin{tcolorbox}[title = Definición 2.1]
+Un \emph{experimento} es el proceso por medio del cual se hace una observación. 
+\end{tcolorbox}
+
+Al realizar un experimento puede terminar en uno o más resultados que se denotarán \emph{eventos}. Los eventos se denotarán con letras mayúsculas. Algunos eventos asociados con un solo tiro de un dado balanceado son los siguientes. 
+
+\begin{tabular}{l l}
+$A$: & Observar un número impar. \\
+$B$: & Observar un número menor que 5. \\
+$C$: & Observar un 2 o un 3. \\
+${E}_{1}$: & Observar un 1. \\
+${E}_{2}$: & Observar un 2. \\
+${E}_{3}$: & Observar un 3. \\
+${E}_{4}$: & Observar un 4. \\
+${E}_{5}$: & Observar un 5. \\
+${E}_{6}$: & Observar un 6. \\
+\end{tabular} \\
+
+Si un evento se puede descomponer en dos o más eventos entonces se denomina un evento compuesto. Un ejemplo puede ser el evento $A$ que se puede descomponer en tres eventos. 
+
+\begin{tcolorbox}[title = Definición 2.2]
+Un \emph{evento simple} no se puede descomponer. Cada evento simple corresponde a un y sólo un \emph{punto muestral}. La letra $E$ con un subíndice se empleará para denotar un evento simple o el correspondiente punto muestral. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Definición 2.3]
+El \emph{espacio muestral} asociado con un experimento es el conjunto formado por todos los posibles puntos muestrales. Un espacio muestral estará denotado por $S$
+\end{tcolorbox}
+
+Esto se puede ver en diagrama de venn de la siguiente manera. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_6.png} \hfill
+}
+
+En esto se puede ver como el espacio muestral $S$ esta formado por seis puntos. A $S$ se le llama un espacio muestral discreto. 
+
+\begin{tcolorbox}[title = Definición 2.4]
+Un \emph{espacio muestral discreto} es aquel que está formado ya sea por un número finito o uno contable de puntos muestrales distintos. 
+\end{tcolorbox}
+
+Se pueden usar los conceptos vistos en la sección anterior con estos eventos. Se pueden considerar a los eventos simples como conjuntos de un solo punto. Por lo tanto todos estos eventos simples son mutuamente excluyentes. Entonces los eventos compuestos son conjuntos de dos o más puntos muestrales. Como se muestra en el siguiente diagrama de venn. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_7.png} \hfill
+}
+
+Las áreas sombreadas representan eventos compuestos, en particular el evento $A$ y $B$ descritos anteriormente. Con esto se llega a la siguiente definición. 
+
+\begin{tcolorbox}[title = Definición 2.5]
+Un \emph{evento} en un espacio muestral discreto $S$ es un conjunto de puntos muestrales, es decir, cualquier subconjunto de $S$.
+\end{tcolorbox}
+
+Con estos conceptos se puede empezar a construir una definición formal de probabilidad. 
+
+\begin{tcolorbox}[title = Definición 2.6]
+Suponga que $S$ es un espacio muestral asociado con un experimento. A todo evento $A$ en $S$(A es el subconjunto de $S$) le asignamos un número $P(A)$, llamado probabilidad de $A$ de modo que se cumplen los siguientes axiomas:
+\begin{tabular}{ll}
+Axioma 1: & $P(A) \geq 0$. \\
+Axioma 2: & $P(S) = 1$. \\
+Axioma 3: & Si ${A}_{1},{A}_{2},{A}_{3},\ldots$ forman una secuencia de \\
+\multicolumn{2}{l}{eventos por pares mutuamente excluyentes en $S$} \\
+\multicolumn{2}{l}{(es decir, ${A}_{i} \cap {A}_{j} = \varnothing$ si $i \neq j$), entonces }\\
+\multicolumn{2}{c}{$P({A}_{1}\cup{A}_{2}\cup{A}_{3}\cup\ldots) = \displaystyle\sum_{i=1}^{\infty}{P({A}_{i})}$}
+\end{tabular}
+\end{tcolorbox}
+
+Al asignar esta probabilidad a cada evento de un espacio muestral se esta trabjanado ahora con un modleo probabilístico. 
+
+\section{Cálculo de la probabilidad de un evento: el método de punto muestral}
+
+\begin{tcolorbox}
+El método de punto muestra se compendia en la sección anterior. Los pasos siguientes se usan para hallar la probabilidad de un evento: 
+\begin{enumerate}
+
+\item[1.] Defina el experimento y determine con toda claridad cómo describir un evento simple. 
+
+\item[2.] Indique los eventos simples asociados con el experimento y pruebe cada uno para asegurarse que no se pueden descomponer. Esto define el espacio muestral $S$. 
+
+\item[3.] Asigne probabilidades razonables a los puntos muestrales en $S$, asegurándose de que $P({E}_{i})\geq 0$ y $\sum{P({E}_{i})} = 1$. 
+
+\item[4.] Defina el evento de interés, $A$, como un conjunto específico de puntos muestrales. (Un punto muestral está en $A$ si $A$ ocurre cuando se presenta el punto muestral. Pruebe \emph{todos} los puntos muestrales en $S$ para identificar los que estén en $A$.)
+
+\item[5.] Encuentre $P(A)$ al sumar las probabilidades de los puntos muestrales en $A$. 
+
+\end{enumerate}
+\end{tcolorbox}
+
+\section{Herramientas para contar puntos muestrales}
+
+En muchos casos la única forma eficiente de calcular la probabilidad de un evento es contar el número de puntos muestrales en algún evento particular y dividir entre el total de puntos muestrales. En otras palabras si un espacio muestral contiene $N$ puntos muestrales igualmente probables y un evento $A$ contiene exactamente ${n}_{a}$ puntos muestrales entonces $P(A) = {n}_{a}/N$. Sin embargo a veces es difícil o hasta imposible contar el número de puntos del espacio muestral. A continuación se muestran algunas herramientas para facilitar este conteo. El primer resultado del análisis combinatorio que se presentara a veces es llamado \emph{regla mn} 
+
+\begin{tcolorbox}[title = Teorema 2.1]
+Con $m$ elementos ${a}_{1},{a}_{2},\ldots,{a}_{m}$ y $n$ elementos ${b}_{1},{b}_{2},\ldots,{b}_{n}$, es posible formar $mn = m \times n$ pares que contengan un elemento de cada grupo. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La verificación del teorema se puede ver al obsrvar la tabla rectangular de la siguiente figura. Hay un cuadro de la tabla para cada par ${a}_{i},{b}_{j}$ y por tanto un total de $m \times n$ cuadros.  
+\end{tcolorbox}
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_8.png} \hfill
+}
+
+Esta herramienta hace que el cálculo del espacio muestral sea mucho más sencillo. En ocasiones los puntos muestrales asociados con un experimento a veces pueden representarse de manera simbólica como una sucesión de números o símbolos. El siguiente teorema se puede usar para determinar el número de arreglos ordenados que se pueden formar. 
+
+\begin{tcolorbox}[title = Definición 2.7]
+Un arreglo ordenado de $r$ objetos distintos se denomina \emph{permutación}. El número de formas de ordenar $n$ objetos distintos tomados $r$ a la vez estará designado por el símbolo ${P}_{r}^{n}.$
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 2.2]
+\begin{align*}
+{P}_{r}^{n}=n(n-1)(n-2)\cdots(n-r + 1) = \frac{n!}{(n - r)!}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Estamos interesados en el número de formas de llenar $r$ posiciones con $n$ objetos distinto. Aplicando la extensión de la regla $mn$, vemos que el primer objeto se puede seleccionar en una de $n$ formas. Después de escoger el primero, el segundo se puede escoger en $(n -1)$ formas, el tercero en $(n - 2)$ y el $r$-ésimo en $(n - r +1)$ formas. EN consecuencia, el número total de arreglos distintos es 
+\begin{align*}
+n(n-1)(n-2)\cdots(n-r + 1)
+\end{align*}
+Expresado en términos de factoriales, 
+\begin{align*}
+{P}_{r}^{n}=n(n-1)(n-2)\cdots(n-r + 1)\frac{(n - r)!}{(n - r)!} = \frac{n!}{(n - r)!}
+\end{align*}
+donde $n! = n(n-1)\cdots(2)(1)$ y 0! = 1
+\end{tcolorbox}
+
+A continuación se presenta otro resultado de análisis combinatorio. 
+
+\begin{tcolorbox}[title = Teorema 2.3]
+El número de formas de dividir $n$ objetos distintos en $k$ grupos distintos que contienen ${n}_{1},{n}_{2},\ldots,{n}_{k}$ objetos, respectivamente, donde cada objeto aparece en exactamente un grupo y $\displaystyle \sum_{i=1}^{k}{{n}_{i}}=n$, es 
+\begin{align*}
+N = \binom{n}{{n}_{1}{n}_{2}\cdots{n}_{k}} = \frac{n!}{{n}_{1}!{n}_{2}!\cdots{n}_{k}!}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+$N$ es el número de arreglos distintos de $n$ objetos en una fila para un caso en el que el reacomodo de los objetos dentro de un grupo no cuenta. Por ejemplo, las letras de la $a$ a la $l$ están acomodadas en tres grupos, donde ${n}_{1} = 3, {n}_{2} = 4$ y ${n}_{3} = 5$: 
+\begin{align*}
+abc|de|f|g|hijkl
+\end{align*}
+
+Es uno de estos arreglos. 
+
+El número de arreglos distintos de los $n$ objetos, suponiendo que todos los objetos sean distintos, es ${P}_{n}^{n} = n!$ (del Teorema 2.2). Entonces ${P}_{n}^{n}$ es igual al número de formas de dividir los $n$ objetos en $k$ grupos (ignorando el orden dentro de los grupos) multiplicado por el número de formas de ordenar los ${n}_{1},{n}_{2},\ldots,{n}_{k}$ elementos dentro de cada grupo. Esta aplicación de la regla $mn$ extendida da 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+\begin{align*}
+{P}_{n}^{n} = (N)\cdot ({n}_{1}!{n}_{2}!{n}_{3}!\cdots{n}_{k}!),
+\end{align*}
+
+donde ${n}_{i}!$ es el número de arreglos distintos de los ${n}_{i}$ objetos del grupo $i$. Al despejar $N$, tenemos
+\begin{align*}
+N = \binom{n}{{n}_{1}{n}_{2}\cdots{n}_{k}} = \frac{n!}{{n}_{1}!{n}_{2}!\cdots{n}_{k}!}
+\end{align*}
+\end{tcolorbox}
+
+En muchas situaciones los puntos muestrales son identificados por un conjunto de símbolos en los que el arreglo de símbolos no es \emph{importante}. En estas situaciones hay una herramienta que nos puede ayudar a contar estos arreglos. 
+
+\begin{tcolorbox}[title = Definición 2.8]
+El número de \emph{combinaciones} de $n$ objetos tomados $r$ a la vez es el número de subconjuntos, cada uno de tamaño $r$, que se pueden formar a partir de los $n$ objetos. Este número estará denotado por ${C}_{r}^{n}$ o $\binom{n}{r}$. 
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = Teorema 2.4]
+El número de subconjuntos desordenados de tamaño $r$ escogidos (sin restitución) de $n$ objetos disponibles es  
+\begin{align*}
+\binom{n}{r} = {C}_{r}^{n} = \frac{{P}_{r}^{n}}{r!} = \frac{n!}{r!(n - r)!}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La selección de $r$ objetos de un total de $n$ objetos es equivalente a dividir los $n$ objetos en $k = 2$ grupos, los $r$ seleccionados y los $(n - r)$ restantes. Éste es el caso especial del problema general de división tratado con el Teorema 2.3. EN el presente caso, $k = 2$, ${n}_{1} = r$ y ${n}_{2} = (n - r)$ y, por tanto, 
+\begin{align*}
+\binom{n}{r} = {C}_{r}^{n} = \binom{n}{r \quad (n - r)} = \frac{n!}{r!(n - r)!}
+\end{align*}
+\end{tcolorbox}
+
+Los términos $\binom{n}{r}$ se conocen generalmente como \emph{coeficientes binomiales} porque se presentan en la \emph{expansión binomial}
+\begin{align*}
+{(x + y)}^{n} &= \binom{n}{0}{x}^{n}{y}^{0} + \binom{n}{1}{x}^{n-1}{y} + \cdots + \binom{n}{n}{x}^{0}{y}^{n} \\
+&= \sum_{i = 0}^{n}{\binom{n}{i}{x}^{n - i}{y}^{i}}
+\end{align*}
+
+\section{Probabilidad Condicional y la Independencia de Eventos }
+
+La probabilidad de un evento en ocasiones depende de la información de otros eventos. Estos se llama la probabilidad condicional de un evento dado información de otros eventos. 
+
+\begin{tcolorbox}[title = Definición 2.9]
+La \emph{probabilidad condicional de un evento} $A$, dado que un evento $B$ ha ocurrido, es igual a 
+\begin{align*}
+P(A|B) = \frac{P(A\cap B)}{P(B)}
+\end{align*}
+siempre que $P(B)>0$. [El simbolo $P(A|B)$ se lee 'probabilidad de $A$ dada $B$'.]
+\end{tcolorbox}
+
+Si la probabilidad de un evento $A$ no es afectada por que ocurra o no ocurra el evento $B$ se dice que $A$ y $B$ son eventos independientes. Estos eventos tienen la siguiente definición. 
+\begin{tcolorbox}[title = Definición 2.10]
+Se dice que dos eventos $A$ y $B$ son \emph{independientes} si se cumple cualquiera de los siguientes casos:
+\begin{align*}
+P(A|B) &= P(A) \\
+P(B|A) &= P(B) \\
+P(A \cap B) &= P(A)P(B) 
+\end{align*} 
+De otro modo, se dice que los eventos son \emph{dependientes}
+\end{tcolorbox}
+
+
+\section{Dos Leyes de Probabilidad}
+
+Las siguientes leyes desempeñan un importante papel en el método de composición de evento para la solución de problemas de probabilidad. 
+
+\begin{tcolorbox}[title = Teorema 2.5]
+\textbf{Ley multiplicativa de probabilidad} La probabilidad de la intersección de dos eventos $A$ y $B$ es 
+\begin{align*}
+P(A \cap B) &= P(A)P(B|A) \\
+ & = P(B) P(A|B) 
+\end{align*}
+Si $A$ y $B$ son independientes, entonces 
+\begin{align*}
+P(A \cap B) = P(A) P(B) 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La ley multiplicativa se deduce directamente de la Definición 2.9, la definición de probabilidad condicional. 
+\end{tcolorbox}
+
+Esta ley se puede extender para hallar la probabilidad de la intersección de cualquier número de eventos. De tal manera para $k$ eventos se puede obtener lo siguiente:
+\begin{align*}
+P({A}_{1}\cap {A}_{2} \cap {A}_{3} \cap \cdots \cap {A}_{k}) &= P({A}_{1})P({A}_{2}|{A}_{1})P({A}_{3}|{A}_{1}\cap {A}_{2}) \\
+&\cdots P({A}_{k}|{A}_{1}\cap{A}_{2}\cap \cdots \cap {A}_{k-1})
+\end{align*}
+
+\begin{tcolorbox}[title = Teorema 2.6]
+\textbf{Ley aditiva de probabilidad} La probabilidad de la unión de dos eventos $A$ y $B$ es 
+\begin{align*}
+P(A \cup B) = P(A) + P(B) - P(A \cap B)
+\end{align*}
+Si $A$ y $B$ son eventos mutuamente excluyentes, $P(A \cap B) = 0$ y 
+\begin{align*}
+P(A \cup B) = P(A) + P(B) 
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración} ]
+La prueba de la ley aditiva se puede deducir al inspeccionar el diagrama de Venn de la siguiente figura. Observe que $A \cup B = A \cup (\overline{A} \cap B)$, donde $A$ y $(\overline{A} \cap B)$ son eventos mutuamente excluyentes. Además, $B = (\overline{A} \cap B) \cup (A \cap B)$, donde $(A \cap \overline{B})$ y $(A \cap B)$ son eventos mutuamente excluyentes. Entonces, por el Axioma 3, se tiene lo siguiente
+\begin{align*}
+P(A \cup B) &= P(A) + P(\overline{A} \cap B) \\
+P(B) &= P(\overline{A} \cap B ) + P(A \cap B)
+\end{align*}
+La igualdad inferior implica que $P(\overline{A} \cap B) = P(B) - P(A \cap B)$. Sustituyendo esta expresión por $P(\overline{A} \cap B)$ en la expresión para $P(A \cup B)$ dada en la ecuación superior del par anterior, obtenemos el resultado deseado: 
+\begin{align*}
+P(A \cup B) = P(A) + P(B) - P(A \cap B)
+\end{align*}
+\end{tcolorbox}
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_9.png} \hfill
+}
+
+\begin{tcolorbox}[title = Teorema 2.7 ]
+Si $A$ es un evento, entonces 
+\begin{align*}
+P(A) = 1 - P(\overline{A})
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración} ]
+Observe que $S = A \cup \overline{A}$. Como $A$ y $\overline{A}$ son eventos mutuamente excluyentes, se deduce que $P(S) = P(A) + P(\overline{A})$. Por tanto, $P(A) + P(\overline{A}) = 1$ y el resultado sigue. 
+\end{tcolorbox}
+
+\section{Cálculo de la Probabilidad de un Evento: el método de composición de evento}
+
+\begin{tcolorbox}
+A continuación veamos un resumen de los pasos seguidos en el método de composición de evento:
+\begin{enumerate}
+\item[1.] Definir el experimento. 
+
+\item[2.] Visualizar la naturaleza de los puntos muestrales. Identificar unos pocos para aclarar el modo de pensar del experto en estadística. 
+
+\item[3.] Escribir una ecuación que exprese el evento de interés, $A$ por ejemplo como una composición de dos o más eventos, usando uniones, intersecciones y/o  complementos. (Nótese que esto iguala conjuntos de puntos.) Asegurarse que el evento $A$ y el evento implicado por la composición representan el mismo conjunto de puntos muestrales. 
+
+\item[4.] Aplicar las leyes aditiva y multiplicativa de probabilidad a las composiciones obtenidas en el paso 3 para hallar $P(A)$. 
+
+\end{enumerate}
+\end{tcolorbox}
+
+\section{Ley de Probabilidad Total y Regla de Bayes}
+
+El método de composición de evento para resolver problemas de probabilidad en ocasiones se facilita al ver el espacio muestral, $S$, como una unión de subconjuntos mutuamente expcluyentes y usar la siguiente \emph{ley de probabilidad total}.
+
+\begin{tcolorbox}[title = Definición 2.11]
+Para algún entero positivo $k$, sean los conjuntos ${B}_{1},{B}_{2},\ldots,{B}_{k}$ tales que 
+\begin{enumerate}
+
+\item[1.] $S = {B}_{1} \cup {B}_{2} \cup \cdots \cup {B}_{k}$.
+
+\item[2.] ${B}_{i} \cap {B}_{j} = \varnothing$, para $i \neq j$.
+\end{enumerate}
+Entonces se dice que la colección de conjuntos $\{{B}_{1},{B}_{2},\ldots,{B}_{k}\}$ es una \emph{partición} de $S$.
+\end{tcolorbox}
+
+Si $A$ es cualquier subconjunto de $S$ y $\{{B}_{1},{B}_{2},\ldots,{B}_{k}\}$ es una partición de $S$, $A$ puede \emph{descomponerse} como sigue:
+\begin{align*}
+A = (A \cap {B}_{1}) \cup (A \cap {B}_{2}) \cup \cdots \cup (A\cap {B}_{k})
+\end{align*}
+La siguiente figura ilustra esta descomposición para $k = 3$. 
+
+{\hfill\includegraphics[width=0.7\hsize]{figures/fig_2_10.png} \hfill
+}
+
+Esto se puede generalizar en el siguiente teorema. 
+
+\begin{tcolorbox}[title = Teorema 2.8]
+Suponga que $\{{B}_{1},{B}_{2},\ldots,{B}_{k}\}$ es una partición de $S$ (vea la Definición 2.11) tal que $P({B}_{i})>0$, para $i = 1,2,\ldots,k$. Entonces, para cualquier evento $A$
+\begin{align*}
+P(A) = \sum_{i=1}^{k}{P(A|{B}_{i})P({B}_{i})}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+Cualquier subconjunto $A$ de $S$ puede escribirse como 
+\begin{align*}
+A &= A\cap S = A \cap ({B}_{1} \cup {B}_{2} \cup \cdots \cup {B}_{k})\\
+& = (A \cap {B}_{1}) \cup (A \cap {B}_{2}) \cup \cdots \cup (A \cap {B}_{k})
+\end{align*}
+Observe que, como $\{{B}_{1},{B}_{2},\ldots,{B}_{k}\}$ es una partición de $S$, si $i \neq j$, 
+\begin{align*}
+(A \cap {B}_{i}) \cap (A \cap {B}_{j}) = A \cap ({B}_{i} \cap {B}_{j}) = A \cap \varnothing = \varnothing 
+\end{align*}
+y que $(A\cap {B}_{i})$ y $(A \cap {B}_{j})$ son eventos mutuamente excluyentes. Entonces, 
+\begin{align*}
+P(A) &= (A \cap {B}_{1}) + (A \cap {B}_{2}) + \cdots + (A \cap {B}_{k}) \\
+&= P(A|{B}_{1})P({B}_{1}) + P(A|{B}_{2})P({B}_{2}) + \cdots \\
+&+ P(A|{B}_{k})P({B}_{k}) \\
+&= \sum_{i = 1}^{k}{P(A|{B}_{i})P({B}_{i})}
+\end{align*}
+\end{tcolorbox}
+
+Usando el teorema anterior se deriva el siguiente teorema.
+
+\begin{tcolorbox}[title = Teorema 2.9]
+\textbf{Regla de Bayes} Suponga que $\{{B}_{1},{B}_{2},\ldots,{B}_{k}\}$ es una partición de $S$ (vea la Definición 2.11) tal que $P({B}_{i})>0$, para $i = 1,2, \ldots, k$. Entonces
+\begin{align*}
+P({B}_{j}|A) = \frac{P(A|{B}_{j})P({B}_{j})}{\displaystyle \sum_{i = 1}^{k}{P(A|{B}_{i})P({B}_{i})}}
+\end{align*}
+\end{tcolorbox}
+
+\begin{tcolorbox}[title = \textbf{Demostración}]
+La demostración se deduce directamente de la definición de probabilidad condicional y la ley de probabilidad total. Observe que
+\begin{align*}
+P({B}_{j}|A) = \frac{P(A \cap {B}_{j})}{P(A)} = \frac{P(A|{B}_{j})P({B}_{j})}{\displaystyle \sum_{i = 1}^{k}{P(A|{B}_{i})P({B}_{i})}}
+\end{align*}
+\end{tcolorbox}
+
+\section{Eventos numéricos y variables aleatorias}
+
+Los eventos de mayor interés para científicos o ingenieros o hombres de negocio son los identificados por números, llamados \emph{eventos numéricos}. Si denotamos con $Y$ una variable a ser medida en un experimento ya sea la cantidad de pacientes que se recuperan con un medicamento o si sube o no el valor de una acción, como el valor de esta variable varia dependiendo del resultado del experimento se le denomina \emph{variable aleatoria}. Una definición más formal es la siguiente. 
+
+\begin{tcolorbox}[title = Definición 2.12]
+Una \emph{variable aleatoria} es una función de valor real para la cual el dominio es un espacio muestral.
+\end{tcolorbox}
+
+\section{Muestreo Aleatorio}
+
+Un experimento estadístico involucra la observación de una muestra seleccionada de un conjunto más grande de datos, existente o conceptual, llamado población. Las mediciones de la muestra, vistas como observaciones de los valores de una o más variables aleatorios, se empleam entonces para hacer una inferencia acerca de las características de la población objetivo. El método de muestreo, conocido como \emph{diseño de un experimento}, afecta la cantidad de información en una muestra y la probabilidad de observar un resultado específico de muestra. El procedimiento de muestreo más sencillo se conoce como \emph{muestreo aleatorio simple} y se define de la siguiente manera. 
+
+\begin{tcolorbox}[title = Definición 2.13]
+Represente con $N$ y $n$ los números de elementos en la población y la muestra, respectivamente. Si el muestreo se realiza en forma tal que cada una de las $\binom{N}{n}$ muestras tiene igual probabilidad de ser seleccionada, se dice que el muestreo es aleatorio y que el resultado es una muestra aleatoria. 
+\end{tcolorbox}
+
+Este tipo de muestreo puede ser usando remplazo al seleccionar los elemntos o sin remplazo. 
+\vfill
+
+
+
+%Great symbol look-up site: \href{http://detexify.kirelabs.org/}{Detexify}\\
+%\href{http://amath.colorado.edu/documentation/LaTeX/Symbols.pdf}{\LaTeX\ Mathematical Symbols}\\
+%\href{ftp://tug.ctan.org/pub/tex-archive/info/symbols/comprehensive/symbols-letter.pdf}{The Comprehensive \LaTeX\ Symbol List}\\ 
+%\href{http://mirrors.med.harvard.edu/ctan/info/lshort/english/lshort.pdf}{The Not So Short Introduction to \LaTeX\ 2$\varepsilon$}\\
+
+\end{multicols}
+
+%\SetWatermarkHorCenter{0.65\paperwidth}
+\end{document}
